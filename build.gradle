@@ -1,0 +1,36 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+}
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.slf4j:slf4j-api:2.0.2'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.29'
+    implementation 'com.github.kotlin-telegram-bot.kotlin-telegram-bot:dispatcher:6.0.7'
+    implementation 'org.jetbrains.exposed:exposed-core:0.38.2'
+    implementation 'org.jetbrains.exposed:exposed-dao:0.38.2'
+    implementation 'org.jetbrains.exposed:exposed-jdbc:0.38.2'
+    implementation 'org.postgresql:postgresql:42.2.2'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '16'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '16'
+}
