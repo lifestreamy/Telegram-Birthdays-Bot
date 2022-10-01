@@ -35,16 +35,12 @@ abstract class KeyboardButtons {
             generateButtonsList(menu.getNode(mutableListOf(3)).childrenNamesList)
 
 
-        fun generateSingleNotificationsButtons(): List<List<KeyboardButton>> {
-            val list = generateButtonsList(menu.getNode(mutableListOf(2, 2)).childrenNamesList)
-//            list.forEach{
-//                println(it[0].text)
-//            }
-            return list
-        }
+        fun generateSingleNotificationsButtons(): List<List<KeyboardButton>> =
+            generateButtonsList(menu.getNode(mutableListOf(2, 2)).childrenNamesList)
+
 
         fun generateMultipleNotificationsButtons(): List<List<KeyboardButton>> =
-            generateButtonsList(menu.getNode(mutableListOf(2,3)).childrenNamesList)
+            generateButtonsList(menu.getNode(mutableListOf(2, 3)).childrenNamesList)
 
     }
 }

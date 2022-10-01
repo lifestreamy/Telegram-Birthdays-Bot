@@ -1,4 +1,5 @@
 package mainBot
+
 import com.github.kotlintelegrambot.bot
 import com.github.kotlintelegrambot.dispatch
 import com.github.kotlintelegrambot.dispatcher.*
@@ -66,8 +67,8 @@ class MainBot {
             val friendsKeyboardButtonsCallText = KeyboardButtons.menu.childrenNamesList[1]
             val notificationsKeyboardButtonsCallText = KeyboardButtons.menu.childrenNamesList[2]
             val supportDeveloperCallText = KeyboardButtons.menu.childrenNamesList[3]
-            val notif1CallText = KeyboardButtons.menu.getNode(mutableListOf(2,2)).name
-            val notif2CallText = KeyboardButtons.menu.getNode(mutableListOf(2,3)).name
+            val notif1CallText = KeyboardButtons.menu.getNode(mutableListOf(2, 2)).name
+            val notif2CallText = KeyboardButtons.menu.getNode(mutableListOf(2, 3)).name
             val bot = bot {
                 token = botToken
                 timeout = 30
@@ -232,8 +233,6 @@ class MainBot {
                             chatId = chatId, text = "Opened Menu",
                             replyMarkup = keyboardMarkup
                         )
-                        val messageId = update.message!!.messageId
-//                bot.deleteMessage(chatId = chatId,messageId = messageId)
                     }
 
                     command("") {
@@ -243,32 +242,30 @@ class MainBot {
                     text(infoKeyboardButtonsCallText) {
                         if (update.message!!.text.equals(infoKeyboardButtonsCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
-                            var messageId = update.message!!.messageId
                             val keyboardMarkup =
-                                KeyboardReplyMarkup(keyboard = KeyboardButtons.generateInfoButtons(), resizeKeyboard = true)
+                                KeyboardReplyMarkup(
+                                    keyboard = KeyboardButtons.generateInfoButtons(),
+                                    resizeKeyboard = true
+                                )
                             bot.sendMessage(
                                 chatId = chatId, text = "Opened Info",
                                 replyMarkup = keyboardMarkup
                             )
-//                    bot.deleteMessage(chatId, messageId)
-                            messageId = update.message!!.messageId
-//                    bot.deleteMessage(chatId = chatId,messageId = messageId)
                         }
                     }
 
                     text(friendsKeyboardButtonsCallText) {
                         if (update.message!!.text.equals(friendsKeyboardButtonsCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
-                            var messageId = update.message!!.messageId
                             val keyboardMarkup =
-                                KeyboardReplyMarkup(keyboard = KeyboardButtons.generateFriendsButtons(), resizeKeyboard = true)
+                                KeyboardReplyMarkup(
+                                    keyboard = KeyboardButtons.generateFriendsButtons(),
+                                    resizeKeyboard = true
+                                )
                             bot.sendMessage(
                                 chatId = chatId, text = "Opened Friends",
                                 replyMarkup = keyboardMarkup
                             )
-//                    bot.deleteMessage(chatId, messageId)
-                            messageId = update.message!!.messageId
-//                    bot.deleteMessage(chatId = chatId,messageId = messageId)
                         }
                     }
 
@@ -276,7 +273,6 @@ class MainBot {
                     text(notificationsKeyboardButtonsCallText) {
                         if (update.message!!.text.equals(notificationsKeyboardButtonsCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
-                            var messageId = update.message!!.messageId
                             val keyboardMarkup =
                                 KeyboardReplyMarkup(
                                     keyboard = KeyboardButtons.generateNotificationsButtons(),
@@ -286,9 +282,6 @@ class MainBot {
                                 chatId = chatId, text = "Opened Notifications",
                                 replyMarkup = keyboardMarkup
                             )
-//                    bot.deleteMessage(chatId, messageId)
-                            messageId = update.message!!.messageId
-//                    bot.deleteMessage(chatId = chatId,messageId = messageId)
                         }
                     }
                     text(notif1CallText) {
@@ -304,9 +297,6 @@ class MainBot {
                                 chatId = chatId, text = "Opened Single Notifications",
                                 replyMarkup = keyboardMarkup
                             )
-//                    bot.deleteMessage(chatId, messageId)
-                            messageId = update.message!!.messageId
-//                    bot.deleteMessage(chatId = chatId,messageId = messageId)
                         }
                     }
                     text(notif2CallText) {
@@ -322,9 +312,7 @@ class MainBot {
                                 chatId = chatId, text = "Opened Multiple Notifications",
                                 replyMarkup = keyboardMarkup
                             )
-//                    bot.deleteMessage(chatId, messageId)
-                            messageId = update.message!!.messageId
-//                    bot.deleteMessage(chatId = chatId,messageId = messageId)
+
                         }
                     }
                     text(supportDeveloperCallText) {
@@ -340,148 +328,146 @@ class MainBot {
                                 chatId = chatId, text = "Opened Developer Support",
                                 replyMarkup = keyboardMarkup
                             )
-//                    bot.deleteMessage(chatId, messageId)
-                            messageId = update.message!!.messageId
-//                    bot.deleteMessage(chatId = chatId,messageId = messageId)
                         }
-                    }
 
 
-                    command("mediaGroup") {
-                        bot.sendMediaGroup(
-                            chatId = ChatId.fromId(message.chat.id),
-                            mediaGroup = MediaGroup.from(
-                                InputMediaPhoto(
-                                    media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
-                                    caption = "I come from an url :P"
+                        command("mediaGroup") {
+                            bot.sendMediaGroup(
+                                chatId = ChatId.fromId(message.chat.id),
+                                mediaGroup = MediaGroup.from(
+                                    InputMediaPhoto(
+                                        media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
+                                        caption = "I come from an url :P"
+                                    ),
+                                    InputMediaPhoto(
+                                        media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
+                                        caption = "Me too!"
+                                    )
                                 ),
-                                InputMediaPhoto(
-                                    media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
-                                    caption = "Me too!"
-                                )
-                            ),
-                            replyToMessageId = message.messageId
-                        )
-                    }
-
-                    callbackQuery("menu") {
-                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
-
-                    }
-
-                    callbackQuery("testButton") {
-                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
-                    }
-
-                    callbackQuery(
-                        callbackData = "showAlert",
-                        callbackAnswerText = "HelloText",
-                        callbackAnswerShowAlert = true
-                    ) {
-                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
-                    }
-
-                    text("ping") {
-                        bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Pong")
-                    }
-                    text("pong") {
-                        bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Ping")
-                    }
-                    text("play game") {
-                        val moves = 1 + (0..20).random()
-                        val winner: String = if (moves % 2 == 0) {
-                            "Player 1 won!"
-                        } else
-                            "Player 2 won"
-                        var waitTime = (900..1500).random()
-                        for (x in 0..moves) {
-                            if (x % 2 == 0)
-                                bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Ping")
-                            else
-                                bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Pong")
-                            Thread.sleep(waitTime.toLong())
-                            waitTime = (900..1500).random()
-                        }
-                        bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = winner)
-                    }
-                    text("Hello") {
-                        bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Hello from dev")
-                    }
-
-                    text("Nice ass") {
-                        if (update.message?.text.equals("Nice ass")) {
-                            bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Nice ass, bro!")
-                        }
-                    }
-
-                    location {
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(message.chat.id),
-                            text = "Your location is (${location.latitude}, ${location.longitude})",
-                            replyMarkup = ReplyKeyboardRemove()
-                        )
-                    }
-
-                    contact {
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(message.chat.id),
-                            text = "Hello, ${contact.firstName} ${contact.lastName}",
-                            replyMarkup = ReplyKeyboardRemove()
-                        )
-                    }
-
-                    channel {
-                        // Handle channel update
-                    }
-
-                    inlineQuery {
-                        val queryText = inlineQuery.query
-
-                        if (queryText.isBlank() or queryText.isEmpty()) return@inlineQuery
-
-                        val inlineResults = (0 until 5).map {
-                            InlineQueryResult.Article(
-                                id = it.toString(),
-                                title = "$it. $queryText",
-                                inputMessageContent = InputMessageContent.Text("$it. $queryText"),
-                                description = "Add $it. before your word"
+                                replyToMessageId = message.messageId
                             )
                         }
-                        bot.answerInlineQuery(inlineQuery.id, inlineResults)
-                    }
 
-                    photos {
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(message.chat.id),
-                            text = "Wowww, awesome photos!!! :P"
-                        )
-                    }
+                        callbackQuery("menu") {
+                            val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                            bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
 
-                    command("diceAsDartboard") {
-                        bot.sendDice(ChatId.fromId(message.chat.id), DiceEmoji.Dartboard)
-                    }
+                        }
 
-                    dice {
-                        bot.sendMessage(
-                            ChatId.fromId(message.chat.id),
-                            "A dice ${dice.emoji.emojiValue} with value ${dice.value} has been received!"
-                        )
-                    }
+                        callbackQuery("testButton") {
+                            val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                            bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
+                        }
 
-                    telegramError {
-                        println(error.getErrorMessage())
+                        callbackQuery(
+                            callbackData = "showAlert",
+                            callbackAnswerText = "HelloText",
+                            callbackAnswerShowAlert = true
+                        ) {
+                            val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                            bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
+                        }
+
+                        text("ping") {
+                            bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Pong")
+                        }
+                        text("pong") {
+                            bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Ping")
+                        }
+                        text("play game") {
+                            val moves = 1 + (0..20).random()
+                            val winner: String = if (moves % 2 == 0) {
+                                "Player 1 won!"
+                            } else
+                                "Player 2 won"
+                            var waitTime = (900..1500).random()
+                            for (x in 0..moves) {
+                                if (x % 2 == 0)
+                                    bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Ping")
+                                else
+                                    bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Pong")
+                                Thread.sleep(waitTime.toLong())
+                                waitTime = (900..1500).random()
+                            }
+                            bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = winner)
+                        }
+                        text("Hello") {
+                            bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Hello from dev")
+                        }
+
+                        text("Nice ass") {
+                            if (update.message?.text.equals("Nice ass")) {
+                                bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Nice ass, bro!")
+                            }
+                        }
+
+                        location {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(message.chat.id),
+                                text = "Your location is (${location.latitude}, ${location.longitude})",
+                                replyMarkup = ReplyKeyboardRemove()
+                            )
+                        }
+
+                        contact {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(message.chat.id),
+                                text = "Hello, ${contact.firstName} ${contact.lastName}",
+                                replyMarkup = ReplyKeyboardRemove()
+                            )
+                        }
+
+                        channel {
+                            // Handle channel update
+                        }
+
+                        inlineQuery {
+                            val queryText = inlineQuery.query
+
+                            if (queryText.isBlank() or queryText.isEmpty()) return@inlineQuery
+
+                            val inlineResults = (0 until 5).map {
+                                InlineQueryResult.Article(
+                                    id = it.toString(),
+                                    title = "$it. $queryText",
+                                    inputMessageContent = InputMessageContent.Text("$it. $queryText"),
+                                    description = "Add $it. before your word"
+                                )
+                            }
+                            bot.answerInlineQuery(inlineQuery.id, inlineResults)
+                        }
+
+                        photos {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(message.chat.id),
+                                text = "Wowww, awesome photos!!! :P"
+                            )
+                        }
+
+                        command("diceAsDartboard") {
+                            bot.sendDice(ChatId.fromId(message.chat.id), DiceEmoji.Dartboard)
+                        }
+
+                        dice {
+                            bot.sendMessage(
+                                ChatId.fromId(message.chat.id),
+                                "A dice ${dice.emoji.emojiValue} with value ${dice.value} has been received!"
+                            )
+                        }
+
+                        telegramError {
+                            println(error.getErrorMessage())
+                        }
+
                     }
 
                 }
 
             }
-
             bot.startPolling()
-        }
 
+
+        }
         fun createMenu() {
 
         }
@@ -501,5 +487,6 @@ class MainBot {
         fun addSuggestionToDatabase() {
 
         }
+
     }
 }
