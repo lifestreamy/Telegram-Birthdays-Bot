@@ -195,124 +195,108 @@ class MainBot {
                             parseMode = MARKDOWN
                         )
                     }
-                    command("inlineButtons") {
-                        val inlineKeyboardMarkup = InlineKeyboardMarkup.create(
-                            listOf(
-                                InlineKeyboardButton.CallbackData(
-                                    text = "Test Inline Button",
-                                    callbackData = "testButton"
-                                )
-                            ),
-                            listOf(InlineKeyboardButton.CallbackData(text = "Show alert", callbackData = "showAlert"))
-                        )
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(message.chat.id),
-                            text = "Hello, inline buttons!",
-                            replyMarkup = inlineKeyboardMarkup
-                        )
-                    }
 
-/* command("menu")
-                    command("menu") {
-                        val chatId = ChatId.fromId(message.chat.id)
-                        val keyboardMarkup =
-                            KeyboardReplyMarkup(keyboard = KeyboardButtons.generateMenuButtons(), resizeKeyboard = true)
-                        bot.sendMessage(
-                            chatId = chatId, text = "",
-                            replyMarkup = keyboardMarkup
-                        )
-                    }
-                    */
+                    /* command("menu")
+                                        command("menu") {
+                                            val chatId = ChatId.fromId(message.chat.id)
+                                            val keyboardMarkup =
+                                                KeyboardReplyMarkup(keyboard = KeyboardButtons.generateMenuButtons(), resizeKeyboard = true)
+                                            bot.sendMessage(
+                                                chatId = chatId, text = "",
+                                                replyMarkup = keyboardMarkup
+                                            )
+                                        }
+                                        */
 
-/* keyboard buttons text calls
-                    text(infoKeyboardButtonsCallText) {
-                        if (update.message!!.text.equals(infoKeyboardButtonsCallText)) {
-                            val chatId = ChatId.fromId(update.message!!.chat.id)
-                            val keyboardMarkup =
-                                KeyboardReplyMarkup(
-                                    keyboard = KeyboardButtons.generateInfoButtons(),
-                                    resizeKeyboard = true
-                                )
-                            bot.sendMessage(
-                                chatId = chatId, text = "Opened Info",
-                                replyMarkup = keyboardMarkup
-                            )
-                        }
-                    }
-                    text(friendsKeyboardButtonsCallText) {
-                        if (update.message!!.text.equals(friendsKeyboardButtonsCallText)) {
-                            val chatId = ChatId.fromId(update.message!!.chat.id)
-                            val keyboardMarkup =
-                                KeyboardReplyMarkup(
-                                    keyboard = KeyboardButtons.generateFriendsButtons(),
-                                    resizeKeyboard = true
-                                )
-                            bot.sendMessage(
-                                chatId = chatId, text = "Opened Friends",
-                                replyMarkup = keyboardMarkup
-                            )
-                        }
-                    }
-                    text(notificationsKeyboardButtonsCallText) {
-                        if (update.message!!.text.equals(notificationsKeyboardButtonsCallText)) {
-                            val chatId = ChatId.fromId(update.message!!.chat.id)
-                            val keyboardMarkup =
-                                KeyboardReplyMarkup(
-                                    keyboard = KeyboardButtons.generateNotificationsButtons(),
-                                    resizeKeyboard = true
-                                )
-                            bot.sendMessage(
-                                chatId = chatId, text = "Opened Notifications",
-                                replyMarkup = keyboardMarkup
-                            )
-                        }
-                    }
-                    text(singleNotificationsCallText) {
-                        if (update.message!!.text.equals(singleNotificationsCallText)) {
-                            val chatId = ChatId.fromId(update.message!!.chat.id)
-                            var messageId = update.message!!.messageId
-                            val keyboardMarkup =
-                                KeyboardReplyMarkup(
-                                    keyboard = KeyboardButtons.generateSingleNotificationsButtons(),
-                                    resizeKeyboard = true
-                                )
-                            bot.sendMessage(
-                                chatId = chatId, text = "Opened Single Notifications",
-                                replyMarkup = keyboardMarkup
-                            )
-                        }
-                    }
-                    text(multipleNotificationsCallText) {
-                        if (update.message!!.text.equals(multipleNotificationsCallText)) {
-                            val chatId = ChatId.fromId(update.message!!.chat.id)
-                            var messageId = update.message!!.messageId
-                            val keyboardMarkup =
-                                KeyboardReplyMarkup(
-                                    keyboard = KeyboardButtons.generateMultipleNotificationsButtons(),
-                                    resizeKeyboard = true
-                                )
-                            bot.sendMessage(
-                                chatId = chatId, text = "Opened Multiple Notifications",
-                                replyMarkup = keyboardMarkup
-                            )
+                    /* keyboard buttons text calls
+                                        text(infoKeyboardButtonsCallText) {
+                                            if (update.message!!.text.equals(infoKeyboardButtonsCallText)) {
+                                                val chatId = ChatId.fromId(update.message!!.chat.id)
+                                                val keyboardMarkup =
+                                                    KeyboardReplyMarkup(
+                                                        keyboard = KeyboardButtons.generateInfoButtons(),
+                                                        resizeKeyboard = true
+                                                    )
+                                                bot.sendMessage(
+                                                    chatId = chatId, text = "Opened Info",
+                                                    replyMarkup = keyboardMarkup
+                                                )
+                                            }
+                                        }
+                                        text(friendsKeyboardButtonsCallText) {
+                                            if (update.message!!.text.equals(friendsKeyboardButtonsCallText)) {
+                                                val chatId = ChatId.fromId(update.message!!.chat.id)
+                                                val keyboardMarkup =
+                                                    KeyboardReplyMarkup(
+                                                        keyboard = KeyboardButtons.generateFriendsButtons(),
+                                                        resizeKeyboard = true
+                                                    )
+                                                bot.sendMessage(
+                                                    chatId = chatId, text = "Opened Friends",
+                                                    replyMarkup = keyboardMarkup
+                                                )
+                                            }
+                                        }
+                                        text(notificationsKeyboardButtonsCallText) {
+                                            if (update.message!!.text.equals(notificationsKeyboardButtonsCallText)) {
+                                                val chatId = ChatId.fromId(update.message!!.chat.id)
+                                                val keyboardMarkup =
+                                                    KeyboardReplyMarkup(
+                                                        keyboard = KeyboardButtons.generateNotificationsButtons(),
+                                                        resizeKeyboard = true
+                                                    )
+                                                bot.sendMessage(
+                                                    chatId = chatId, text = "Opened Notifications",
+                                                    replyMarkup = keyboardMarkup
+                                                )
+                                            }
+                                        }
+                                        text(singleNotificationsCallText) {
+                                            if (update.message!!.text.equals(singleNotificationsCallText)) {
+                                                val chatId = ChatId.fromId(update.message!!.chat.id)
+                                                var messageId = update.message!!.messageId
+                                                val keyboardMarkup =
+                                                    KeyboardReplyMarkup(
+                                                        keyboard = KeyboardButtons.generateSingleNotificationsButtons(),
+                                                        resizeKeyboard = true
+                                                    )
+                                                bot.sendMessage(
+                                                    chatId = chatId, text = "Opened Single Notifications",
+                                                    replyMarkup = keyboardMarkup
+                                                )
+                                            }
+                                        }
+                                        text(multipleNotificationsCallText) {
+                                            if (update.message!!.text.equals(multipleNotificationsCallText)) {
+                                                val chatId = ChatId.fromId(update.message!!.chat.id)
+                                                var messageId = update.message!!.messageId
+                                                val keyboardMarkup =
+                                                    KeyboardReplyMarkup(
+                                                        keyboard = KeyboardButtons.generateMultipleNotificationsButtons(),
+                                                        resizeKeyboard = true
+                                                    )
+                                                bot.sendMessage(
+                                                    chatId = chatId, text = "Opened Multiple Notifications",
+                                                    replyMarkup = keyboardMarkup
+                                                )
 
-                        }
-                    }
-                    text(supportDeveloperCallText) {
-                        if (update.message!!.text.equals(supportDeveloperCallText)) {
-                            val chatId = ChatId.fromId(update.message!!.chat.id)
-                            val keyboardMarkup =
-                                KeyboardReplyMarkup(
-                                    keyboard = KeyboardButtons.generateSupportDeveloperButtons(),
-                                    resizeKeyboard = true
-                                )
-                            bot.sendMessage(
-                                chatId = chatId, text = "Opened Developer Support",
-                                replyMarkup = keyboardMarkup
-                            )
-                        }
-                    }
-                    */
+                                            }
+                                        }
+                                        text(supportDeveloperCallText) {
+                                            if (update.message!!.text.equals(supportDeveloperCallText)) {
+                                                val chatId = ChatId.fromId(update.message!!.chat.id)
+                                                val keyboardMarkup =
+                                                    KeyboardReplyMarkup(
+                                                        keyboard = KeyboardButtons.generateSupportDeveloperButtons(),
+                                                        resizeKeyboard = true
+                                                    )
+                                                bot.sendMessage(
+                                                    chatId = chatId, text = "Opened Developer Support",
+                                                    replyMarkup = keyboardMarkup
+                                                )
+                                            }
+                                        }
+                                        */
                     command("mediaGroup") {
                         bot.sendMediaGroup(
                             chatId = ChatId.fromId(message.chat.id),
@@ -338,57 +322,96 @@ class MainBot {
                             replyMarkup = InlineButtons.generateMenuButtons()
                         )
                     }
-
-                    callbackQuery(menu.getNode(mutableListOf(0)).name){
+                    val info = menu.getNode(mutableListOf(0)).name
+                    callbackQuery(info) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         bot.sendMessage(
                             chatId = ChatId.fromId(chatId),
-                            text = menu.getNode(mutableListOf(0)).name,
+                            text = info,
                             replyMarkup = InlineButtons.generateInfoButtons()
                         )
                     }
-                    callbackQuery(menu.getNode(mutableListOf(1)).name){
+                    val friends = menu.getNode(mutableListOf(1)).name
+                    callbackQuery(friends) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         bot.sendMessage(
                             chatId = ChatId.fromId(chatId),
-                            text = menu.getNode(mutableListOf(1)).name,
+                            text = friends,
                             replyMarkup = InlineButtons.generateFriendsButtons()
                         )
                     }
-                    callbackQuery(menu.getNode(mutableListOf(2)).name){
+                    val notifications = menu.getNode(mutableListOf(2)).name
+                    callbackQuery(notifications) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         bot.sendMessage(
                             chatId = ChatId.fromId(chatId),
-                            text = menu.getNode(mutableListOf(2)).name,
+                            text = notifications,
                             replyMarkup = InlineButtons.generateNotificationsButtons()
                         )
                     }
-                    callbackQuery(menu.getNode(mutableListOf(2,2)).name){
+                    val singleNotifications = menu.getNode(mutableListOf(2, 2)).name
+                    callbackQuery(singleNotifications) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         bot.sendMessage(
                             chatId = ChatId.fromId(chatId),
-                            text = menu.getNode(mutableListOf(2,2)).name,
+                            text = singleNotifications,
                             replyMarkup = InlineButtons.generateSingleNotificationsButtons()
                         )
                     }
-                    callbackQuery(menu.getNode(mutableListOf(2,3)).name){
+                    val multipleNotifications = menu.getNode(mutableListOf(2, 3)).name
+                    callbackQuery(multipleNotifications) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         bot.sendMessage(
                             chatId = ChatId.fromId(chatId),
-                            text = menu.getNode(mutableListOf(2,3)).name,
+                            text = multipleNotifications,
                             replyMarkup = InlineButtons.generateMultipleNotificationsButtons()
                         )
                     }
-                    callbackQuery(menu.getNode(mutableListOf(3)).name){
+                    val supportDeveloper = menu.getNode(mutableListOf(3)).name
+                    callbackQuery(supportDeveloper) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         bot.sendMessage(
                             chatId = ChatId.fromId(chatId),
-                            text = menu.getNode(mutableListOf(3)).name,
+                            text = supportDeveloper,
                             replyMarkup = InlineButtons.generateSupportDeveloperButtons()
                         )
                     }
-
-
+                    val goBackFromInfo = menu.getNode(mutableListOf(0,2)).name
+                    callbackQuery(goBackFromInfo) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = goBackFromInfo,
+                            replyMarkup = InlineButtons.generateMenuButtons()
+                        )
+                    }
+                    val goBackFromFriends = menu.getNode(mutableListOf(1,7)).name
+                    callbackQuery(goBackFromFriends) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = goBackFromFriends,
+                            replyMarkup = InlineButtons.generateMenuButtons()
+                        )
+                    }
+                    val goBackFromNotifications = menu.getNode(mutableListOf(2,4)).name
+                    callbackQuery(goBackFromNotifications) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = goBackFromNotifications,
+                            replyMarkup = InlineButtons.generateMenuButtons()
+                        )
+                    }
+                    val goBackFromSupport = menu.getNode(mutableListOf(3,2)).name
+                    callbackQuery(goBackFromSupport) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = goBackFromSupport,
+                            replyMarkup = InlineButtons.generateMenuButtons()
+                        )
+                    }
                     callbackQuery("testButton") {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
