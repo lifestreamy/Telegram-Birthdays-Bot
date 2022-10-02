@@ -4,7 +4,9 @@ import com.github.kotlintelegrambot.entities.keyboard.KeyboardButton
 import mainBot.MenuNavigationTree
 
 abstract class KeyboardButtons {
+
     companion object {
+
         lateinit var menu: MenuNavigationTree.TreeNode<String>
 
         fun generateButtonsList(buttonList: MutableList<String>): List<List<KeyboardButton>> {

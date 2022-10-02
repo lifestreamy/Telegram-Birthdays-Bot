@@ -89,7 +89,7 @@ class MenuNavigationTree {
             val infoMenuList = mutableListOf(
                 "See Your Info",
                 "Change Your Info",
-                "Go back"
+                "Go back from info"
             )
             addNodes(menu, mutableListOf(0), infoMenuList)
             val friendsActions = mutableListOf(
@@ -100,7 +100,7 @@ class MenuNavigationTree {
                 "See friend's wishlist",
                 "Create a local friend",
                 "Share my local friend",
-                "Go back"
+                "Go back from friends"
             )
             addNodes(menu, mutableListOf(1), friendsActions)
             val notificationsActions = mutableListOf(
@@ -108,12 +108,13 @@ class MenuNavigationTree {
                 "Bot notifications", //1
                 "Single friend reminders settings", //2
                 "Multiple friend reminders settings", //3
-                "Go Back"
+                "Go Back from notifications"
             )
             addNodes(menu, mutableListOf(2), notificationsActions)
             val supportDeveloperActions = mutableListOf(
                 "Share this bot",
-                "Donate"
+                "Donate",
+                "Go back from support"
             )
             addNodes(menu, mutableListOf(3), supportDeveloperActions)
             val singleNotificationsActions = mutableListOf(

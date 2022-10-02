@@ -17,6 +17,7 @@ import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
 import com.github.kotlintelegrambot.extensions.filters.Filter
 import com.github.kotlintelegrambot.logging.LogLevel
 import com.google.gson.Gson
+import mainBot.buttons.InlineButtons
 import mainBot.buttons.KeyboardButtons
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
@@ -27,20 +28,21 @@ class MainBot {
         inline fun <reified T> Gson.fromJson(json: String): T =
             this.fromJson<T>(json, T::class.java)
 
-        private fun infoMessage(message: String) {
+        private fun initialize() {
             val url = URL("https://api.telegram.org/bot$botToken/sendMessage")
-            val connection = url.openConnection() as HttpURLConnection
+            val c = url.openConnection() as HttpURLConnection
             try {
-                connection.requestMethod = "POST"
-                connection.doOutput = true
-                val wr = OutputStreamWriter(connection.outputStream)
-                wr.write("chat_id=$myChatId&text=$message")
+                c.requestMethod = "POST"
+                c.doOutput = true
+                val wr = OutputStreamWriter(c.outputStream)
+                wr.write("chat_id=$myChatId&text=Backend started")
                 wr.flush()
                 println("URL : $url")
-                println("Response Code : ${connection.responseCode}")
+                println("Response Code : ${c.responseCode}")
             } finally {
-                connection.disconnect()
+                c.disconnect()
             }
+
         }
 
         lateinit var myChatId: String
@@ -61,27 +63,26 @@ class MainBot {
             Companion.dbLink = dbLink
             Companion.dbUser = dbUser
             Companion.dbPassword = dbPassword
-            infoMessage("Backend Started")
-            KeyboardButtons.menu = MenuNavigationTree.buildMenu()
+
+            val menu = MenuNavigationTree.buildMenu()
+            KeyboardButtons.menu = menu
+            InlineButtons.menu = menu
             val infoKeyboardButtonsCallText = KeyboardButtons.menu.childrenNamesList[0]
             val friendsKeyboardButtonsCallText = KeyboardButtons.menu.childrenNamesList[1]
             val notificationsKeyboardButtonsCallText = KeyboardButtons.menu.childrenNamesList[2]
             val supportDeveloperCallText = KeyboardButtons.menu.childrenNamesList[3]
-            val notif1CallText = KeyboardButtons.menu.getNode(mutableListOf(2, 2)).name
-            val notif2CallText = KeyboardButtons.menu.getNode(mutableListOf(2, 3)).name
+            val singleNotificationsCallText = KeyboardButtons.menu.getNode(mutableListOf(2, 2)).name
+            val multipleNotificationsCallText = KeyboardButtons.menu.getNode(mutableListOf(2, 3)).name
             val bot = bot {
                 token = botToken
                 timeout = 30
                 logLevel = LogLevel.Network.Body
                 val commandsList = mutableListOf<BotCommand>()
-                commandsList.add(BotCommand("/start", "Start"))
                 commandsList.add(BotCommand("/menu", "Main Menu"))
-                commandsList.add(BotCommand("/addFriend", "Send friend request"))
-                commandsList.add(BotCommand("/userButtons", "test"))
-                commandsList.add(BotCommand("/e", "f"))
-                commandsList.add(BotCommand("/g", "h"))
+                commandsList.add(BotCommand("/botinfo", "Info about bot"))
                 dispatch {
 
+                    initialize()
 
                     message(Filter.Sticker) {
                         bot.sendMessage(
@@ -120,11 +121,10 @@ class MainBot {
                         )
                     }
 
-                    command("start") {
+                    command("botinfo") {
                         bot.setMyCommands(commandsList)
                         val chatId = ChatId.fromId(update.message!!.chat.id)
                         var startMessage = """
-                    *Bot started.* 
                     Your chat Id is ${chatId.id}
                     Developer: @lifestreamy
                     For suggestions to developer use /suggest
@@ -133,25 +133,19 @@ class MainBot {
                         var commandsInString = "\nAvailable commands:\n"
                         bot.getMyCommands().fold({ list ->
                             list.forEach {
-                                print("command ${it.command} description ${it.description}")
                                 commandsInString = "$commandsInString /${it.command} - ${it.description} \n"
                             }
                         },
-                            {}
+                            {
+
+                            }
                         )
                         startMessage = "$startMessage$commandsInString"
-                        println(startMessage)
-                        val keyboardMarkup =
-                            KeyboardReplyMarkup(keyboard = KeyboardButtons.generateMenuButtons(), resizeKeyboard = true)
                         val inlineKeyboardMarkup = InlineKeyboardMarkup.create(
-                            listOf(InlineKeyboardButton.CallbackData(text = "Menu", callbackData = "menu"))
+                            listOf(InlineKeyboardButton.CallbackData(text = "Menu", callbackData = menu.name))
                         )
                         val result = bot.sendMessage(
-                            chatId,
-                            text = startMessage
-//                    ,
-//                    parseMode = MARKDOWN,
-//                    replyMarkup = inlineKeyboardMarkup
+                            chatId, text = startMessage, replyMarkup = inlineKeyboardMarkup
                         )
                         result.fold(
                             {
@@ -164,15 +158,12 @@ class MainBot {
                     }
 
 
-                    command("updatemyinfo") {
+                    callbackQuery("updatemyinfo") {
                         updateMyInfoInDatabase()
                     }
-
-                    command("suggest") {
+                    callbackQuery("suggest") {
                         addSuggestionToDatabase()
                     }
-
-
                     command("addfriend") {
                         val chatId = ChatId.fromId(message.chat.id)
                         val joinedArgs = args.joinToString()
@@ -196,7 +187,6 @@ class MainBot {
 
                         }
                     }
-
                     command("markdown") {
                         val markdownText = "_Cool message_: *Markdown* is `beautiful` :P"
                         bot.sendMessage(
@@ -205,8 +195,6 @@ class MainBot {
                             parseMode = MARKDOWN
                         )
                     }
-
-
                     command("inlineButtons") {
                         val inlineKeyboardMarkup = InlineKeyboardMarkup.create(
                             listOf(
@@ -224,21 +212,19 @@ class MainBot {
                         )
                     }
 
-
+/* command("menu")
                     command("menu") {
                         val chatId = ChatId.fromId(message.chat.id)
                         val keyboardMarkup =
                             KeyboardReplyMarkup(keyboard = KeyboardButtons.generateMenuButtons(), resizeKeyboard = true)
                         bot.sendMessage(
-                            chatId = chatId, text = "Opened Menu",
+                            chatId = chatId, text = "",
                             replyMarkup = keyboardMarkup
                         )
                     }
+                    */
 
-                    command("") {
-
-                    }
-
+/* keyboard buttons text calls
                     text(infoKeyboardButtonsCallText) {
                         if (update.message!!.text.equals(infoKeyboardButtonsCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
@@ -253,7 +239,6 @@ class MainBot {
                             )
                         }
                     }
-
                     text(friendsKeyboardButtonsCallText) {
                         if (update.message!!.text.equals(friendsKeyboardButtonsCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
@@ -268,8 +253,6 @@ class MainBot {
                             )
                         }
                     }
-
-
                     text(notificationsKeyboardButtonsCallText) {
                         if (update.message!!.text.equals(notificationsKeyboardButtonsCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
@@ -284,8 +267,8 @@ class MainBot {
                             )
                         }
                     }
-                    text(notif1CallText) {
-                        if (update.message!!.text.equals(notif1CallText)) {
+                    text(singleNotificationsCallText) {
+                        if (update.message!!.text.equals(singleNotificationsCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
                             var messageId = update.message!!.messageId
                             val keyboardMarkup =
@@ -299,8 +282,8 @@ class MainBot {
                             )
                         }
                     }
-                    text(notif2CallText) {
-                        if (update.message!!.text.equals(notif2CallText)) {
+                    text(multipleNotificationsCallText) {
+                        if (update.message!!.text.equals(multipleNotificationsCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
                             var messageId = update.message!!.messageId
                             val keyboardMarkup =
@@ -318,7 +301,6 @@ class MainBot {
                     text(supportDeveloperCallText) {
                         if (update.message!!.text.equals(supportDeveloperCallText)) {
                             val chatId = ChatId.fromId(update.message!!.chat.id)
-                            var messageId = update.message!!.messageId
                             val keyboardMarkup =
                                 KeyboardReplyMarkup(
                                     keyboard = KeyboardButtons.generateSupportDeveloperButtons(),
@@ -329,145 +311,200 @@ class MainBot {
                                 replyMarkup = keyboardMarkup
                             )
                         }
-
-
-                        command("mediaGroup") {
-                            bot.sendMediaGroup(
-                                chatId = ChatId.fromId(message.chat.id),
-                                mediaGroup = MediaGroup.from(
-                                    InputMediaPhoto(
-                                        media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
-                                        caption = "I come from an url :P"
-                                    ),
-                                    InputMediaPhoto(
-                                        media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
-                                        caption = "Me too!"
-                                    )
+                    }
+                    */
+                    command("mediaGroup") {
+                        bot.sendMediaGroup(
+                            chatId = ChatId.fromId(message.chat.id),
+                            mediaGroup = MediaGroup.from(
+                                InputMediaPhoto(
+                                    media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
+                                    caption = "I come from an url :P"
                                 ),
-                                replyToMessageId = message.messageId
-                            )
-                        }
-
-                        callbackQuery("menu") {
-                            val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                            bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
-
-                        }
-
-                        callbackQuery("testButton") {
-                            val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                            bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
-                        }
-
-                        callbackQuery(
-                            callbackData = "showAlert",
-                            callbackAnswerText = "HelloText",
-                            callbackAnswerShowAlert = true
-                        ) {
-                            val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                            bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
-                        }
-
-                        text("ping") {
-                            bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Pong")
-                        }
-                        text("pong") {
-                            bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Ping")
-                        }
-                        text("play game") {
-                            val moves = 1 + (0..20).random()
-                            val winner: String = if (moves % 2 == 0) {
-                                "Player 1 won!"
-                            } else
-                                "Player 2 won"
-                            var waitTime = (900..1500).random()
-                            for (x in 0..moves) {
-                                if (x % 2 == 0)
-                                    bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Ping")
-                                else
-                                    bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Pong")
-                                Thread.sleep(waitTime.toLong())
-                                waitTime = (900..1500).random()
-                            }
-                            bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = winner)
-                        }
-                        text("Hello") {
-                            bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Hello from dev")
-                        }
-
-                        text("Nice ass") {
-                            if (update.message?.text.equals("Nice ass")) {
-                                bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Nice ass, bro!")
-                            }
-                        }
-
-                        location {
-                            bot.sendMessage(
-                                chatId = ChatId.fromId(message.chat.id),
-                                text = "Your location is (${location.latitude}, ${location.longitude})",
-                                replyMarkup = ReplyKeyboardRemove()
-                            )
-                        }
-
-                        contact {
-                            bot.sendMessage(
-                                chatId = ChatId.fromId(message.chat.id),
-                                text = "Hello, ${contact.firstName} ${contact.lastName}",
-                                replyMarkup = ReplyKeyboardRemove()
-                            )
-                        }
-
-                        channel {
-                            // Handle channel update
-                        }
-
-                        inlineQuery {
-                            val queryText = inlineQuery.query
-
-                            if (queryText.isBlank() or queryText.isEmpty()) return@inlineQuery
-
-                            val inlineResults = (0 until 5).map {
-                                InlineQueryResult.Article(
-                                    id = it.toString(),
-                                    title = "$it. $queryText",
-                                    inputMessageContent = InputMessageContent.Text("$it. $queryText"),
-                                    description = "Add $it. before your word"
+                                InputMediaPhoto(
+                                    media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
+                                    caption = "Me too!"
                                 )
-                            }
-                            bot.answerInlineQuery(inlineQuery.id, inlineResults)
-                        }
+                            ),
+                            replyToMessageId = message.messageId
+                        )
+                    }
 
-                        photos {
-                            bot.sendMessage(
-                                chatId = ChatId.fromId(message.chat.id),
-                                text = "Wowww, awesome photos!!! :P"
+                    callbackQuery(menu.name) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = menu.name,
+                            replyMarkup = InlineButtons.generateMenuButtons()
+                        )
+                    }
+
+                    callbackQuery(menu.getNode(mutableListOf(0)).name){
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = menu.getNode(mutableListOf(0)).name,
+                            replyMarkup = InlineButtons.generateInfoButtons()
+                        )
+                    }
+                    callbackQuery(menu.getNode(mutableListOf(1)).name){
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = menu.getNode(mutableListOf(1)).name,
+                            replyMarkup = InlineButtons.generateFriendsButtons()
+                        )
+                    }
+                    callbackQuery(menu.getNode(mutableListOf(2)).name){
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = menu.getNode(mutableListOf(2)).name,
+                            replyMarkup = InlineButtons.generateNotificationsButtons()
+                        )
+                    }
+                    callbackQuery(menu.getNode(mutableListOf(2,2)).name){
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = menu.getNode(mutableListOf(2,2)).name,
+                            replyMarkup = InlineButtons.generateSingleNotificationsButtons()
+                        )
+                    }
+                    callbackQuery(menu.getNode(mutableListOf(2,3)).name){
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = menu.getNode(mutableListOf(2,3)).name,
+                            replyMarkup = InlineButtons.generateMultipleNotificationsButtons()
+                        )
+                    }
+                    callbackQuery(menu.getNode(mutableListOf(3)).name){
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(chatId),
+                            text = menu.getNode(mutableListOf(3)).name,
+                            replyMarkup = InlineButtons.generateSupportDeveloperButtons()
+                        )
+                    }
+
+
+                    callbackQuery("testButton") {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        bot.sendMessage(ChatId.fromId(chatId), callbackQuery.data)
+                    }
+
+                    callbackQuery(
+                        callbackData = "showAlert",
+                        callbackAnswerText = "HelloText",
+                        callbackAnswerShowAlert = true
+                    ) {
+                        if (callbackQuery.message?.chat != null) {
+                            val chatId = callbackQuery.message!!.chat.id
+                            bot.sendMessage(chatId = ChatId.fromId(chatId), callbackQuery.data)
+                        } else return@callbackQuery
+                    }
+
+                    text("ping") {
+                        bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Pong")
+                    }
+                    text("pong") {
+                        bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Ping")
+                    }
+                    text("play game") {
+                        val moves = 1 + (0..20).random()
+                        val winner: String = if (moves % 2 == 0) {
+                            "Player 1 won!"
+                        } else
+                            "Player 2 won"
+                        var waitTime = (900..1500).random()
+                        for (x in 0..moves) {
+                            if (x % 2 == 0)
+                                bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Ping")
+                            else
+                                bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Pong")
+                            Thread.sleep(waitTime.toLong())
+                            waitTime = (900..1500).random()
+                        }
+                        bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = winner)
+                    }
+                    text("Hello") {
+                        bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Hello from dev")
+                    }
+
+                    text("Nice ass") {
+                        if (update.message?.text.equals("Nice ass")) {
+                            bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Nice ass, bro!")
+                        }
+                    }
+
+                    location {
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(message.chat.id),
+                            text = "Your location is (${location.latitude}, ${location.longitude})",
+                            replyMarkup = ReplyKeyboardRemove()
+                        )
+                    }
+
+                    contact {
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(message.chat.id),
+                            text = "Hello, ${contact.firstName} ${contact.lastName}",
+                            replyMarkup = ReplyKeyboardRemove()
+                        )
+                    }
+
+                    channel {
+                        // Handle channel update
+                    }
+
+                    inlineQuery {
+                        val queryText = inlineQuery.query
+
+                        if (queryText.isBlank() or queryText.isEmpty()) return@inlineQuery
+
+                        val inlineResults = (0 until 5).map {
+                            InlineQueryResult.Article(
+                                id = it.toString(),
+                                title = "$it. $queryText",
+                                inputMessageContent = InputMessageContent.Text("$it. $queryText"),
+                                description = "Add $it. before your word"
                             )
                         }
+                        bot.answerInlineQuery(inlineQuery.id, inlineResults)
+                    }
 
-                        command("diceAsDartboard") {
-                            bot.sendDice(ChatId.fromId(message.chat.id), DiceEmoji.Dartboard)
-                        }
+                    photos {
+                        bot.sendMessage(
+                            chatId = ChatId.fromId(message.chat.id),
+                            text = "Wowww, awesome photos!!! :P"
+                        )
+                    }
 
-                        dice {
-                            bot.sendMessage(
-                                ChatId.fromId(message.chat.id),
-                                "A dice ${dice.emoji.emojiValue} with value ${dice.value} has been received!"
-                            )
-                        }
+                    command("diceAsDartboard") {
+                        bot.sendDice(ChatId.fromId(message.chat.id), DiceEmoji.Dartboard)
+                    }
 
-                        telegramError {
-                            println(error.getErrorMessage())
-                        }
+                    dice {
+                        bot.sendMessage(
+                            ChatId.fromId(message.chat.id),
+                            "A dice ${dice.emoji.emojiValue} with value ${dice.value} has been received!"
+                        )
+                    }
 
+                    telegramError {
+                        println(error.getErrorMessage())
                     }
 
                 }
 
             }
+
             bot.startPolling()
 
 
         }
+
         fun createMenu() {
 
         }
