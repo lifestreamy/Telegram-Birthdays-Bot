@@ -2,13 +2,14 @@ package mainBot.buttons
 
 import com.github.kotlintelegrambot.entities.InlineKeyboardMarkup
 import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
-import mainBot.MenuNavigationTree
+import treeBuilder.Tree.TreeNode
 
 abstract class InlineButtons {
 
     companion object {
 
-        lateinit var menu: MenuNavigationTree.TreeNode<String>
+        lateinit var menu: TreeNode<String>
+
 
         fun generateButtonsList(buttonList: MutableList<String>): InlineKeyboardMarkup {
             val list: MutableList<List<InlineKeyboardButton>> = mutableListOf()
@@ -18,6 +19,7 @@ abstract class InlineButtons {
             }
             return InlineKeyboardMarkup.create(list.toList())
         }
+
 
         fun generateMenuButtons(): InlineKeyboardMarkup {
             return generateButtonsList(menu.getNode().childrenNamesList)
@@ -31,6 +33,11 @@ abstract class InlineButtons {
         fun generateFriendsButtons(): InlineKeyboardMarkup =
             generateButtonsList(menu.getNode(mutableListOf(1)).childrenNamesList)
 
+        fun generatePublicFriendsButtons(): InlineKeyboardMarkup =
+            generateButtonsList(menu.getNode(mutableListOf(1,0)).childrenNamesList)
+
+        fun generateLocalFriendsButtons(): InlineKeyboardMarkup =
+            generateButtonsList(menu.getNode(mutableListOf(1,1)).childrenNamesList)
 
         fun generateNotificationsButtons(): InlineKeyboardMarkup =
             generateButtonsList(menu.getNode(mutableListOf(2)).childrenNamesList)

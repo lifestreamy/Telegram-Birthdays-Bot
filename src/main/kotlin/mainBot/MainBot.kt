@@ -64,7 +64,7 @@ class MainBot {
             Companion.dbUser = dbUser
             Companion.dbPassword = dbPassword
 
-            val menu = MenuNavigationTree.buildMenu()
+            val menu = MenuTree.buildMenu()
             KeyboardButtons.menu = menu
             InlineButtons.menu = menu
             val infoKeyboardButtonsCallText = KeyboardButtons.menu.childrenNamesList[0]
@@ -316,101 +316,167 @@ class MainBot {
 
                     callbackQuery(menu.name) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = menu.name,
-                            replyMarkup = InlineButtons.generateMenuButtons()
-                        )
+                        if (callbackQuery.data == menu.name) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = menu.name,
+                                replyMarkup = InlineButtons.generateMenuButtons()
+                            )
+                        }
                     }
                     val info = menu.getNode(mutableListOf(0)).name
                     callbackQuery(info) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = info,
-                            replyMarkup = InlineButtons.generateInfoButtons()
-                        )
+                        if (callbackQuery.data == info) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = info,
+                                replyMarkup = InlineButtons.generateInfoButtons()
+                            )
+                        }
                     }
                     val friends = menu.getNode(mutableListOf(1)).name
                     callbackQuery(friends) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = friends,
-                            replyMarkup = InlineButtons.generateFriendsButtons()
-                        )
+                        if (callbackQuery.data == friends) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = friends,
+                                replyMarkup = InlineButtons.generateFriendsButtons()
+                            )
+                        }
                     }
                     val notifications = menu.getNode(mutableListOf(2)).name
                     callbackQuery(notifications) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = notifications,
-                            replyMarkup = InlineButtons.generateNotificationsButtons()
-                        )
+                        if (callbackQuery.data == notifications) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = notifications,
+                                replyMarkup = InlineButtons.generateNotificationsButtons()
+                            )
+                        }
                     }
                     val singleNotifications = menu.getNode(mutableListOf(2, 2)).name
                     callbackQuery(singleNotifications) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = singleNotifications,
-                            replyMarkup = InlineButtons.generateSingleNotificationsButtons()
-                        )
+                        if (callbackQuery.data == singleNotifications) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = singleNotifications,
+                                replyMarkup = InlineButtons.generateSingleNotificationsButtons()
+                            )
+                        }
                     }
                     val multipleNotifications = menu.getNode(mutableListOf(2, 3)).name
                     callbackQuery(multipleNotifications) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = multipleNotifications,
-                            replyMarkup = InlineButtons.generateMultipleNotificationsButtons()
-                        )
+                        if (callbackQuery.data == multipleNotifications) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = multipleNotifications,
+                                replyMarkup = InlineButtons.generateMultipleNotificationsButtons()
+                            )
+                        }
                     }
                     val supportDeveloper = menu.getNode(mutableListOf(3)).name
                     callbackQuery(supportDeveloper) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = supportDeveloper,
-                            replyMarkup = InlineButtons.generateSupportDeveloperButtons()
-                        )
+                        if (callbackQuery.data == supportDeveloper) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = supportDeveloper,
+                                replyMarkup = InlineButtons.generateSupportDeveloperButtons()
+                            )
+                        }
                     }
-                    val goBackFromInfo = menu.getNode(mutableListOf(0,2)).name
+                    val goBackFromInfo = menu.getNode(mutableListOf(0)).childrenList.last().name
                     callbackQuery(goBackFromInfo) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = goBackFromInfo,
-                            replyMarkup = InlineButtons.generateMenuButtons()
-                        )
+                        if (callbackQuery.data == goBackFromInfo) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = goBackFromInfo,
+                                replyMarkup = InlineButtons.generateMenuButtons()
+                            )
+                        }
                     }
-                    val goBackFromFriends = menu.getNode(mutableListOf(1,7)).name
+                    val goBackFromFriends = menu.getNode(mutableListOf(1)).childrenList.last().name
                     callbackQuery(goBackFromFriends) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = goBackFromFriends,
-                            replyMarkup = InlineButtons.generateMenuButtons()
-                        )
+                        if (callbackQuery.data == goBackFromFriends) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = goBackFromFriends,
+                                replyMarkup = InlineButtons.generateMenuButtons()
+                            )
+                        }
                     }
-                    val goBackFromNotifications = menu.getNode(mutableListOf(2,4)).name
+                    val goBackFromNotifications = menu.getNode(mutableListOf(2)).childrenList.last().name
                     callbackQuery(goBackFromNotifications) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        if (callbackQuery.data == goBackFromNotifications) {
                         bot.sendMessage(
                             chatId = ChatId.fromId(chatId),
                             text = goBackFromNotifications,
                             replyMarkup = InlineButtons.generateMenuButtons()
                         )
+                        }
                     }
-                    val goBackFromSupport = menu.getNode(mutableListOf(3,2)).name
+                    val goBackFromSupport = menu.getNode(mutableListOf(3)).childrenList.last().name
                     callbackQuery(goBackFromSupport) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        if (callbackQuery.data == goBackFromSupport) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = goBackFromSupport,
+                                replyMarkup = InlineButtons.generateMenuButtons()
+                            )
+                        }
+                    }
+                    val publicFriends = menu.getNode(mutableListOf(1,0)).name
+                    callbackQuery(publicFriends) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        if (callbackQuery.data == publicFriends) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = publicFriends,
+                                replyMarkup = InlineButtons.generatePublicFriendsButtons()
+                            )
+                        }
+                    }
+                    val localFriends = menu.getNode(mutableListOf(1,1)).name
+                    callbackQuery(localFriends) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        if (callbackQuery.data == localFriends) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = localFriends,
+                                replyMarkup = InlineButtons.generateLocalFriendsButtons()
+                            )
+                        }
+                    }
+                    val goBackFromPublicFriends = menu.getNode(mutableListOf(1,0)).childrenList.last().name
+                    callbackQuery(goBackFromPublicFriends) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        if (callbackQuery.data == goBackFromPublicFriends){
                         bot.sendMessage(
                             chatId = ChatId.fromId(chatId),
-                            text = goBackFromSupport,
-                            replyMarkup = InlineButtons.generateMenuButtons()
+                            text = goBackFromPublicFriends,
+                            replyMarkup = InlineButtons.generateFriendsButtons()
                         )
+                    }
+                    }
+                    val goBackFromLocalFriends = menu.getNode(mutableListOf(1,1)).childrenList.last().name
+                    callbackQuery(goBackFromLocalFriends) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        if (callbackQuery.message!!.equals(goBackFromLocalFriends)) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = goBackFromLocalFriends,
+                                replyMarkup = InlineButtons.generateFriendsButtons()
+                            )
+                        }
                     }
                     callbackQuery("testButton") {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
@@ -538,6 +604,7 @@ class MainBot {
 
         fun updateMyInfoInDatabase() {
             // TODO: add or update my name, telegramid and date of birth in Database
+            // 
         }
 
         fun updateMyWishlist(wish: String) {

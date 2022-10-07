@@ -1,13 +1,13 @@
 package mainBot.buttons
 
 import com.github.kotlintelegrambot.entities.keyboard.KeyboardButton
-import mainBot.MenuNavigationTree
+import treeBuilder.Tree.TreeNode
 
 abstract class KeyboardButtons {
 
     companion object {
 
-        lateinit var menu: MenuNavigationTree.TreeNode<String>
+        lateinit var menu: TreeNode<String>
 
         fun generateButtonsList(buttonList: MutableList<String>): List<List<KeyboardButton>> {
             val list = mutableListOf<List<KeyboardButton>>()
