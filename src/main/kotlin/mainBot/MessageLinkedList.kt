@@ -1,4 +1,0 @@
-package mainBot
-
-class MessageList {
-}

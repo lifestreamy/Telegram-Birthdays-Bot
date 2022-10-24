@@ -1,17 +1,16 @@
-package mainBot
+package mainBot.menu
 
 import treeBuilder.Tree
-import treeBuilder.Tree.TreeNode
 
 class MenuTree {
     companion object {
 
-        lateinit var menuRoot: TreeNode<String>
+        lateinit var menuRoot: Tree.TreeNode<String>
             private set
 
 
-        fun buildMenu(): TreeNode<String> {
-            val menuRoot = TreeNode<String>("Main Menu")
+        fun buildMenu(): Tree.TreeNode<String> {
+            val menuRoot = Tree.TreeNode<String>("Main Menu")
             val menuTree = Tree(menuRoot)
             val menuList = mutableListOf(
                 "Open Info Menu",  //0
@@ -21,7 +20,7 @@ class MenuTree {
             )
             menuTree.addNodes(menuRoot, Pair(intArrayOf(), menuList))
             val infoMenuList = mutableListOf(
-                "See Your Info", "Change Your Info", "Go back from info"
+                "See Your Info", "Add Your Info", "Edit my Wishlist", "Go back from info"
             )
             val friendsActions = mutableListOf(
                 "Public friends", "Local friends", "Go back from friends"
