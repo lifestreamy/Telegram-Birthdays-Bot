@@ -1,12 +1,15 @@
 package mainBot
 
+import com.github.kotlintelegrambot.Bot
 import com.github.kotlintelegrambot.bot
 import com.github.kotlintelegrambot.dispatch
 import com.github.kotlintelegrambot.dispatcher.*
-import com.github.kotlintelegrambot.dispatcher.message
-import com.github.kotlintelegrambot.entities.*
+import com.github.kotlintelegrambot.entities.BotCommand
+import com.github.kotlintelegrambot.entities.ChatId
+import com.github.kotlintelegrambot.entities.InlineKeyboardMarkup
 import com.github.kotlintelegrambot.entities.ParseMode.MARKDOWN
 import com.github.kotlintelegrambot.entities.ParseMode.MARKDOWN_V2
+import com.github.kotlintelegrambot.entities.ReplyKeyboardRemove
 import com.github.kotlintelegrambot.entities.TelegramFile.ByUrl
 import com.github.kotlintelegrambot.entities.dice.DiceEmoji
 import com.github.kotlintelegrambot.entities.inlinequeryresults.InlineQueryResult
@@ -16,18 +19,18 @@ import com.github.kotlintelegrambot.entities.inputmedia.MediaGroup
 import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
 import com.github.kotlintelegrambot.extensions.filters.Filter
 import com.github.kotlintelegrambot.logging.LogLevel
-import com.google.gson.Gson
 import mainBot.buttons.InlineButtons
 import mainBot.buttons.KeyboardButtons
+import mainBot.menu.MenuTree
+import mainBot.types.TelegramName
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import java.sql.Date
+import java.sql.Time
 
 class MainBot {
     companion object {
-        inline fun <reified T> Gson.fromJson(json: String): T =
-            this.fromJson<T>(json, T::class.java)
-
         private fun initialize() {
             val url = URL("https://api.telegram.org/bot$botToken/sendMessage")
             val c = url.openConnection() as HttpURLConnection
@@ -51,10 +54,24 @@ class MainBot {
         lateinit var dbUser: String
         lateinit var dbPassword: String
 
-
         @JvmStatic
         fun main(args: Array<String>) {
             main(args[0], args[1], args[2], args[3], args[4])
+        }
+
+        fun sendQuestionSequence(bot: Bot, vararg questionSequence: Question) {
+            Question("ass", String)
+        }
+
+        interface Types {
+            val string: String
+            val date: Date
+            val telegramName: TelegramName
+            val time: Time
+        }
+
+        class Question(body: String, type: Any) {
+
         }
 
         fun main(botToken: String, myChatId: String, dbLink: String, dbUser: String, dbPassword: String) {
@@ -80,21 +97,20 @@ class MainBot {
                 val commandsList = mutableListOf<BotCommand>()
                 commandsList.add(BotCommand("/menu", "Main Menu"))
                 commandsList.add(BotCommand("/botinfo", "Info about bot"))
+                commandsList.add(BotCommand("/enterdata", "test enter data"))
                 dispatch {
 
                     initialize()
 
                     message(Filter.Sticker) {
                         bot.sendMessage(
-                            ChatId.fromId(message.chat.id),
-                            text = "You have received an awesome sticker \\o/"
+                            ChatId.fromId(message.chat.id), text = "You have received an awesome sticker \\o/"
                         )
                     }
 
                     message(Filter.Reply or Filter.Forward) {
                         bot.sendMessage(
-                            ChatId.fromId(message.chat.id),
-                            text = "someone is replying or forwarding messages ..."
+                            ChatId.fromId(message.chat.id), text = "someone is replying or forwarding messages ..."
                         )
                     }
 
@@ -115,12 +131,97 @@ class MainBot {
                     ```
                 """.trimIndent()
                         bot.sendMessage(
-                            chatId = ChatId.fromId(message.chat.id),
-                            text = markdownV2Text,
-                            parseMode = MARKDOWN_V2
+                            chatId = ChatId.fromId(message.chat.id), text = markdownV2Text, parseMode = MARKDOWN_V2
                         )
                     }
 
+                    command("test_cb") {
+                        bot.sendMessage(
+                            ChatId.fromId(update.message!!.chat.id),
+                            text = "hfg",
+                            replyMarkup = InlineKeyboardMarkup.create(
+                                listOf(InlineKeyboardButton.CallbackData(text = "test_cb", callbackData = "data1"))
+                            )
+                        )
+                    }
+
+                    command("enterdata") {
+                        val data = mutableListOf<String>()
+                        bot.sendMessage(
+                            ChatId.fromId(update.message!!.chat.id),
+                            text = "asdsad",
+                            replyMarkup = InlineKeyboardMarkup.create(
+                                listOf(InlineKeyboardButton.CallbackData(text = "data1", callbackData = "data1"))
+                            )
+                        )
+                        val callbackText1 = "data1"
+                        val callbackText2 = "data2"
+                        val callbackText3 = "data3"
+                        callbackQuery(callbackText1) callback1@{
+                            val chatId1 = callbackQuery.message?.chat?.id ?: return@callback1
+                            if (callbackQuery.data == callbackText1) {
+                                bot.sendMessage(
+                                    chatId = ChatId.fromId(chatId1),
+                                    text = "received cb data1",
+                                    replyMarkup = InlineKeyboardMarkup.create(
+                                        listOf(
+                                            InlineKeyboardButton.CallbackData(
+                                                text = "data2", callbackData = callbackText2
+                                            )
+                                        )
+                                    )
+                                )
+                            }
+
+//                            callbackText1 = null.toString()
+                            callbackQuery(callbackText2) callback2@{
+                                val chatId2 = callbackQuery.message?.chat?.id ?: return@callback2
+                                if (callbackQuery.data == callbackText2) {
+                                    bot.sendMessage(
+                                        chatId = ChatId.fromId(chatId2),
+                                        text = "received cb data2",
+                                        replyMarkup = InlineKeyboardMarkup.create(
+                                            listOf(
+                                                InlineKeyboardButton.CallbackData(
+                                                    text = "data3", callbackData = callbackText3
+                                                )
+                                            )
+                                        )
+                                    )
+                                }
+//                                callbackText2 = null.toString()
+                                callbackQuery(callbackText3) callback3@{
+                                    val chatId3 = callbackQuery.message?.chat?.id ?: return@callback3
+                                    if (callbackQuery.data == callbackText3) {
+                                        bot.sendMessage(
+                                            chatId = ChatId.fromId(chatId3), text = "received cb data3"
+                                        )
+                                    }
+//                                    callbackText3 = null.toString()
+                                    removeHandler(callbackText3)
+                                }
+                                removeHandler(callbackText2)
+                            }
+                            removeHandler(callbackText1)
+                        }
+                    }
+                    command("testnullcb") {
+                        bot.sendMessage(
+                            ChatId.fromId(update.message!!.chat.id),
+                            text = "null cb",
+                            replyMarkup = InlineKeyboardMarkup.create(
+                                listOf(InlineKeyboardButton.CallbackData(text = "null", callbackData = null.toString()))
+                            )
+                        )
+                    }
+                    callbackQuery(null.toString()) {
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
+                        if (callbackQuery.data == null.toString()) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId), text = "received null cb query"
+                            )
+                        }
+                    }
                     command("botinfo") {
                         bot.setMyCommands(commandsList)
                         val chatId = ChatId.fromId(update.message!!.chat.id)
@@ -135,11 +236,9 @@ class MainBot {
                             list.forEach {
                                 commandsInString = "$commandsInString /${it.command} - ${it.description} \n"
                             }
-                        },
-                            {
+                        }, {
 
-                            }
-                        )
+                        })
                         startMessage = "$startMessage$commandsInString"
                         val inlineKeyboardMarkup = InlineKeyboardMarkup.create(
                             listOf(InlineKeyboardButton.CallbackData(text = "Menu", callbackData = menu.name))
@@ -147,13 +246,20 @@ class MainBot {
                         val result = bot.sendMessage(
                             chatId, text = startMessage, replyMarkup = inlineKeyboardMarkup
                         )
-                        result.fold(
-                            {
-                                // do something here with the response
-                            },
-                            {
-                                // do something with the error
-                            }
+                        result.fold({
+                            // do something here with the response
+                        }, {
+                            // do something with the error
+                        })
+                    }
+
+                    command("menu") {
+                        val chatId = ChatId.fromId(update.message!!.chat.id)
+                        val inlineKeyboardMarkup = InlineKeyboardMarkup.create(
+                            listOf(InlineKeyboardButton.CallbackData(text = "Menu", callbackData = menu.name))
+                        )
+                        bot.sendMessage(
+                            chatId, text = "Click to open menu", replyMarkup = inlineKeyboardMarkup
                         )
                     }
 
@@ -177,8 +283,7 @@ class MainBot {
                             response = joinedArgs.drop(1)
                             sendFriendRequest(response)
                             bot.sendMessage(
-                                chatId = chatId,
-                                text = "Sent friend request to: @$response"
+                                chatId = chatId, text = "Sent friend request to: @$response"
                             )
 
                         } else {
@@ -190,9 +295,7 @@ class MainBot {
                     command("markdown") {
                         val markdownText = "_Cool message_: *Markdown* is `beautiful` :P"
                         bot.sendMessage(
-                            chatId = ChatId.fromId(message.chat.id),
-                            text = markdownText,
-                            parseMode = MARKDOWN
+                            chatId = ChatId.fromId(message.chat.id), text = markdownText, parseMode = MARKDOWN
                         )
                     }
 
@@ -297,20 +400,18 @@ class MainBot {
                                             }
                                         }
                                         */
+
                     command("mediaGroup") {
                         bot.sendMediaGroup(
-                            chatId = ChatId.fromId(message.chat.id),
-                            mediaGroup = MediaGroup.from(
+                            chatId = ChatId.fromId(message.chat.id), mediaGroup = MediaGroup.from(
                                 InputMediaPhoto(
                                     media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
                                     caption = "I come from an url :P"
-                                ),
-                                InputMediaPhoto(
+                                ), InputMediaPhoto(
                                     media = ByUrl("https://www.sngular.com/wp-content/uploads/2019/11/Kotlin-Blog-1400x411.png"),
                                     caption = "Me too!"
                                 )
-                            ),
-                            replyToMessageId = message.messageId
+                            ), replyToMessageId = message.messageId
                         )
                     }
 
@@ -335,6 +436,45 @@ class MainBot {
                             )
                         }
                     }
+
+                    val addInfo = menu.getNode(mutableListOf(0, 1)).name
+                    callbackQuery(addInfo) callback1@{
+                        val chatId = callbackQuery.message?.chat?.id ?: return@callback1
+                        if (callbackQuery.data == addInfo) {
+                            val text1 = "Enter your name"
+                            val text2 = "Enter your birth date"
+                            val data = mutableListOf<String>()
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId), text = text1
+                            )
+                            text text1@{
+                                if (this.text.isNotBlank()) {
+                                    data.add(this.text)
+                                    bot.sendMessage(
+                                        chatId = ChatId.fromId(chatId), text = text2
+                                    )
+                                    removeHandler(null)
+                                    text {
+                                        if (this.text.isNotBlank()) {
+                                            data.add(this.text)
+                                            bot.sendMessage(
+                                                chatId = ChatId.fromId(chatId), text = "Data Saved"
+                                            )
+                                            bot.sendMessage(
+                                                chatId = ChatId.fromId(chatId), text = """Your name is: ${data[0]}
+                                                   Your telegramId is @${update.message?.from?.username}
+                                                   Your birth date is ${data[1]}
+                                                """.trimMargin()
+                                            )
+                                        } else bot.sendMessage(
+                                            ChatId.fromId(chatId), text = "Birth date is empty, try again"
+                                        )
+                                    }
+                                } else bot.sendMessage(ChatId.fromId(chatId), text = "Name is empty, try again")
+                            }
+                        }
+                    }
+
                     val friends = menu.getNode(mutableListOf(1)).name
                     callbackQuery(friends) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
@@ -416,11 +556,11 @@ class MainBot {
                     callbackQuery(goBackFromNotifications) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         if (callbackQuery.data == goBackFromNotifications) {
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = goBackFromNotifications,
-                            replyMarkup = InlineButtons.generateMenuButtons()
-                        )
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = goBackFromNotifications,
+                                replyMarkup = InlineButtons.generateMenuButtons()
+                            )
                         }
                     }
                     val goBackFromSupport = menu.getNode(mutableListOf(3)).childrenList.last().name
@@ -434,7 +574,7 @@ class MainBot {
                             )
                         }
                     }
-                    val publicFriends = menu.getNode(mutableListOf(1,0)).name
+                    val publicFriends = menu.getNode(mutableListOf(1, 0)).name
                     callbackQuery(publicFriends) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         if (callbackQuery.data == publicFriends) {
@@ -445,7 +585,7 @@ class MainBot {
                             )
                         }
                     }
-                    val localFriends = menu.getNode(mutableListOf(1,1)).name
+                    val localFriends = menu.getNode(mutableListOf(1, 1)).name
                     callbackQuery(localFriends) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         if (callbackQuery.data == localFriends) {
@@ -456,18 +596,18 @@ class MainBot {
                             )
                         }
                     }
-                    val goBackFromPublicFriends = menu.getNode(mutableListOf(1,0)).childrenList.last().name
+                    val goBackFromPublicFriends = menu.getNode(mutableListOf(1, 0)).childrenList.last().name
                     callbackQuery(goBackFromPublicFriends) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
-                        if (callbackQuery.data == goBackFromPublicFriends){
-                        bot.sendMessage(
-                            chatId = ChatId.fromId(chatId),
-                            text = goBackFromPublicFriends,
-                            replyMarkup = InlineButtons.generateFriendsButtons()
-                        )
+                        if (callbackQuery.data == goBackFromPublicFriends) {
+                            bot.sendMessage(
+                                chatId = ChatId.fromId(chatId),
+                                text = goBackFromPublicFriends,
+                                replyMarkup = InlineButtons.generateFriendsButtons()
+                            )
+                        }
                     }
-                    }
-                    val goBackFromLocalFriends = menu.getNode(mutableListOf(1,1)).childrenList.last().name
+                    val goBackFromLocalFriends = menu.getNode(mutableListOf(1, 1)).childrenList.last().name
                     callbackQuery(goBackFromLocalFriends) {
                         val chatId = callbackQuery.message?.chat?.id ?: return@callbackQuery
                         if (callbackQuery.message!!.equals(goBackFromLocalFriends)) {
@@ -484,9 +624,7 @@ class MainBot {
                     }
 
                     callbackQuery(
-                        callbackData = "showAlert",
-                        callbackAnswerText = "HelloText",
-                        callbackAnswerShowAlert = true
+                        callbackData = "showAlert", callbackAnswerText = "HelloText", callbackAnswerShowAlert = true
                     ) {
                         if (callbackQuery.message?.chat != null) {
                             val chatId = callbackQuery.message!!.chat.id
@@ -504,14 +642,14 @@ class MainBot {
                         val moves = 1 + (0..20).random()
                         val winner: String = if (moves % 2 == 0) {
                             "Player 1 won!"
-                        } else
-                            "Player 2 won"
+                        } else "Player 2 won"
                         var waitTime = (900..1500).random()
                         for (x in 0..moves) {
-                            if (x % 2 == 0)
-                                bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Ping")
-                            else
-                                bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Pong")
+                            if (x % 2 == 0) bot.sendMessage(
+                                chatId = ChatId.fromId(update.message?.chat!!.id),
+                                text = "Ping"
+                            )
+                            else bot.sendMessage(chatId = ChatId.fromId(update.message?.chat!!.id), text = "Pong")
                             Thread.sleep(waitTime.toLong())
                             waitTime = (900..1500).random()
                         }
@@ -565,8 +703,7 @@ class MainBot {
 
                     photos {
                         bot.sendMessage(
-                            chatId = ChatId.fromId(message.chat.id),
-                            text = "Wowww, awesome photos!!! :P"
+                            chatId = ChatId.fromId(message.chat.id), text = "Wowww, awesome photos!!! :P"
                         )
                     }
 
@@ -616,4 +753,5 @@ class MainBot {
         }
 
     }
+
 }
