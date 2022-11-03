@@ -17,6 +17,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-api:2.0.3'
     implementation 'org.slf4j:slf4j-log4j12:2.0.3'
     implementation 'com.github.lifestreamy:kotlin-telegram-bot:6.0.9'
+    implementation 'eu.vendeli:telegram-bot:2.2.2'
     implementation 'com.github.lifestreamy:TreeBuilder:master-SNAPSHOT'
     implementation 'org.jetbrains.exposed:exposed-core:0.40.1'
     implementation 'org.jetbrains.exposed:exposed-dao:0.40.1'
