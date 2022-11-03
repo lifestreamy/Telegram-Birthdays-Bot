@@ -74,6 +74,8 @@ class MainBot {
 
         }
 
+        // TODO: migrate to https://github.com/vendelieu/telegram-bot
+
         fun main(botToken: String, myChatId: String, dbLink: String, dbUser: String, dbPassword: String) {
             Companion.botToken = botToken
             Companion.myChatId = myChatId
