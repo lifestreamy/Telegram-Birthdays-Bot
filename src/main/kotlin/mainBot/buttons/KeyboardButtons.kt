@@ -1,4 +1,5 @@
 package mainBot.buttons
+/*
 
 import com.github.kotlintelegrambot.entities.keyboard.KeyboardButton
 import treeBuilder.Tree.TreeNode
@@ -45,4 +46,4 @@ abstract class KeyboardButtons {
             generateButtonsList(menu.getNode(mutableListOf(2, 3)).childrenNamesList)
 
     }
-}
+}*/

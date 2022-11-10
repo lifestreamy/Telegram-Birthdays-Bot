@@ -6,7 +6,7 @@ build/
 
 ### config.properties ###
 config.properties
-
+logs/
 ### IntelliJ IDEA ###
 *.iws
 *.iml
