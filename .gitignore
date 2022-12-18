@@ -4,6 +4,12 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### config.properties ###
+config.properties
+### bot logs
+logs/
+### liquibase.properties
+/src/main/resources/db/liquibase.properties
 ### IntelliJ IDEA ###
 *.iws
 *.iml
@@ -37,3 +43,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+/Dockerfile

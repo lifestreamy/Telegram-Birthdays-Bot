@@ -1,4 +1,5 @@
 package mainBot.buttons
+/*
 
 import com.github.kotlintelegrambot.entities.InlineKeyboardMarkup
 import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
@@ -57,3 +58,4 @@ abstract class InlineButtons {
     }
 
 }
+*/
