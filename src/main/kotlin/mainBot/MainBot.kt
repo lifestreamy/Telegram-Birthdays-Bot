@@ -2,16 +2,18 @@ package mainBot
 
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.message
-import eu.vendeli.tgbot.utils.inlineKeyboardMarkup
+import eu.vendeli.tgbot.types.ReplyKeyboardMarkup
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import mainBot.buttons.KeyboardButtons
 import mainBot.menu.MenuTree
-import mainBot.types.TelegramName
+import mainBot.util.Util
+import redis.RedisConnector
 import java.io.FileInputStream
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
-import java.sql.Date
-import java.sql.Time
 import java.util.*
 
 class MainBot {
@@ -24,15 +26,19 @@ class MainBot {
             return prop.getProperty(key)
         }
 
-        private fun initialize() {
+        private suspend fun initialize() {
             val url = URL("https://api.telegram.org/bot$botToken/sendMessage")
-            val c = url.openConnection() as HttpURLConnection
+            val c = withContext(Dispatchers.IO) {
+                url.openConnection()
+            } as HttpURLConnection
             try {
                 c.requestMethod = "POST"
                 c.doOutput = true
                 val wr = OutputStreamWriter(c.outputStream)
-                wr.write("chat_id=$myChatId&text=Backend started")
-                wr.flush()
+                withContext(Dispatchers.IO) {
+                    wr.write("chat_id=$myChatId&text=Backend started")
+                    wr.flush()
+                }
                 println("URL : $url")
                 println("Response Code : ${c.responseCode}")
             } finally {
@@ -41,39 +47,72 @@ class MainBot {
 
         }
 
+
         lateinit var myChatId: String
         lateinit var botToken: String
         lateinit var dbLink: String
         lateinit var dbUser: String
         lateinit var dbPassword: String
 
+
         // TODO: migrate to https://github.com/vendelieu/telegram-bot
         @JvmStatic
         fun main(args: Array<String>): Unit = runBlocking {
             botToken = getProp("botToken")
-            val bot = TelegramBot(botToken, "eu.vendeli.samples.controller")
             myChatId = getProp("myChatId")
             dbLink = getProp("dbLink")
             dbUser = getProp("dbUser")
             dbPassword = getProp("dbPassword")
-//            bot.update.setListener {
-//                message(it.message?.text ?: "").send(it.message?.from?.id ?: 0, bot)
-//            }
-            bot.handleUpdates {
-                onCommand("/menu"){
-                    message { "Open Menu" }.markup {
-                        inlineKeyboardMarkup {
-                            "button1" callback "button1"
-                            "button2" callback "button2"
-                            "button3" callback "button3"
-                            "button4" callback "button4"
-                            "button4" callback "button4"
-                            "button4" callback "button4"
-                            "button4" callback "button4"
-                        }
-                    }.send(user, bot)
+            initialize()
+            val redis = RedisConnector("localhost")
+            val regex = Util.convertMenuToRegex()
+            val menuTree = MenuTree.instance
+            val menuMap = menuTree.menuMap
+            val bot = TelegramBot(botToken, "mainBot.controller") {
+                rateLimits { // general limits
+                    period = 1000
+                    rate = 3
                 }
             }
+            bot.handleUpdates {
+                onCommand("""(red|green|blue)""".toRegex()) {
+                    message { "you typed ${update.message?.text} color" }.send(user, bot)
+                }
+                /**
+                 * Open main menu on /menu command
+                 */
+                onCommand("/menu") {
+                    // delete path for this user id
+                    redis.del(update.message!!.from!!.id.toString())
+                    message { "Main menu" }.markup {
+                        ReplyKeyboardMarkup(KeyboardButtons.generateButtonsByPath())
+                    }.send(user, bot)
+                }
+
+                onCommand(regex) {
+                    val text = update.message?.text
+                    val fromId = update.message!!.from!!.id
+                    if (text != "Go back") {
+                        val path = menuMap[text]
+                        path?.let {
+                            redis.setStack(fromId.toString(), *it)
+                            message { "Opening $text" }.markup {
+                                ReplyKeyboardMarkup(KeyboardButtons.generateButtonsByPath(*path))
+                            }.send(user, bot)
+                        }
+                    } else {
+                        val path = redis.removeLast(fromId.toString()).getAll(fromId.toString())
+                        message { "Going back" }.markup {
+                            ReplyKeyboardMarkup(KeyboardButtons.generateButtonsByPath(*path))
+                        }.send(user, bot)
+                    }
+                }
+
+
+            }
+
+
         }
+
     }
 }

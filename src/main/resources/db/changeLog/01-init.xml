@@ -1,0 +1,133 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        logicalFilePath="01-init.xml">
+
+    <changeSet id="01" author="tim" context="prod">
+        <sql>
+            CREATE SEQUENCE users_id_seq
+            INCREMENT 1
+            START 1
+            MINVALUE 1
+            MAXVALUE 2147483647
+            CACHE 1
+<!--            OWNED BY users.id;-->
+            ;
+
+
+            CREATE TABLE users
+            (
+            id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass)
+            constraint users_pkey
+            primary key,
+            name text,
+            telegramid text,
+            birth_date date
+            );
+
+            create unique index users_name_uindex
+            on users (name);
+
+            CREATE TABLE friendships
+            (
+            id1 integer NOT NULL,
+            id2 integer NOT NULL,
+            accepted boolean NOT NULL,
+            CONSTRAINT friendships_pkey PRIMARY KEY (id2, id1),
+            CONSTRAINT id1_fkey FOREIGN KEY (id1)
+            REFERENCES users (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID,
+            CONSTRAINT id2_fkey FOREIGN KEY (id2)
+            REFERENCES users (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+            );
+
+            CREATE TABLE wishes
+            (
+            id integer NOT NULL,
+            text text,
+            who_will_buy integer,
+            CONSTRAINT wishes_pkey PRIMARY KEY (id, text),
+            CONSTRAINT wishes_fkey FOREIGN KEY (id)
+            REFERENCES users (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+            );
+
+            CREATE TABLE notifications
+            (
+            id integer NOT NULL,
+            type text NOT NULL,
+            message text NOT NULL,
+            date_time timestamp(6) with time zone NOT NULL,
+            CONSTRAINT notifications_pkey PRIMARY KEY (message, type, id, date_time),
+            CONSTRAINT notifications_fkey FOREIGN KEY (id)
+            REFERENCES users (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+            );
+
+            CREATE TABLE local_friends
+            (
+            id integer NOT NULL,
+            name text NOT NULL,
+            birth_date date,
+            CONSTRAINT local_friends_pkey PRIMARY KEY (id, name),
+            CONSTRAINT local_friends_fkey FOREIGN KEY (id)
+            REFERENCES users (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+            );
+
+            CREATE TABLE local_friends_access
+            (
+            id1 integer NOT NULL,
+            name text NOT NULL,
+            id2 integer,
+            CONSTRAINT local_friends_access_pkey PRIMARY KEY (id1, name),
+            CONSTRAINT local_friends_access_fkey FOREIGN KEY (id1, name)
+            REFERENCES local_friends (id, name) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID,
+            CONSTRAINT local_friends_access_fkey2 FOREIGN KEY (id2)
+            REFERENCES users (id) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+            );
+
+            CREATE TABLE local_wishes
+            (
+            id integer NOT NULL,
+            name text NOT NULL,
+            text text NOT NULL,
+            who_will_buy text,
+            CONSTRAINT local_wishes_pkey PRIMARY KEY (text, name, id),
+            CONSTRAINT local_wishes_fkey FOREIGN KEY (id, name)
+            REFERENCES local_friends (id, name) MATCH SIMPLE
+            ON UPDATE NO ACTION
+            ON DELETE NO ACTION
+            NOT VALID
+            );
+        </sql>
+        <rollback>
+            drop table local_wishes;
+            drop table local_friends_access;
+            drop table local_friends;
+            drop table notifications;
+            drop table wishes;
+            drop table friendships;
+            drop table users;
+            drop sequence users_id_seq;
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

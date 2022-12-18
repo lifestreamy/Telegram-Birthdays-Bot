@@ -37,7 +37,7 @@
 
     <logger name="eu.vendeli.tgbot" level="ERROR"/>
 
-    <logger name="TelegramUpdateHandler" level="TRACE"/>
+    <logger name="TelegramUpdateHandler" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

@@ -1,4 +1,4 @@
-package databaseConnectivity.tables
+package postgresql.tables
 
 import org.jetbrains.exposed.sql.Table
 

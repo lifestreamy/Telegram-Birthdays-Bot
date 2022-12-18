@@ -2,14 +2,34 @@ package mainBot.menu
 
 import treeBuilder.Tree
 
-class MenuTree {
+class MenuTree private constructor(){
+
+
     companion object {
 
+        private fun generateMenuMap() : Map<String, IntArray> {
+            val map : MutableMap<String, IntArray> = mutableMapOf()
+            menuTree.getAllNodes().forEach {
+                map[it.name] = it.getPath().toIntArray()
+            }
+            return map.toMap()
+        }
+
+        val menuMap : Map<String, IntArray>;
+
+        val instance = MenuTree
         lateinit var menuRoot: Tree.TreeNode<String>
             private set
 
+        lateinit var menuTree: Tree<String>
+            private set
 
-        fun buildMenu(): Tree.TreeNode<String> {
+        init {
+            buildMenu()
+            menuMap = generateMenuMap()
+        }
+
+        private fun buildMenu() {
             val menuRoot = Tree.TreeNode<String>("Main Menu")
             val menuTree = Tree(menuRoot)
             val menuList = mutableListOf(
@@ -20,20 +40,20 @@ class MenuTree {
             )
             menuTree.addNodes(menuRoot, Pair(intArrayOf(), menuList))
             val infoMenuList = mutableListOf(
-                "See Your Info", "Add Your Info", "Edit my Wishlist", "Go back from info"
+                "See Your Info", "Add Your Info", "Edit my Wishlist", "Go back"
             )
             val friendsActions = mutableListOf(
-                "Public friends", "Local friends", "Go back from friends"
+                "Public friends", "Local friends", "Go back"
             )
             val notificationsActions = mutableListOf(
                 "My active notifications", //0
                 "Bot notifications", //1
                 "Single friend reminders settings", //2
                 "Multiple friend reminders settings", //3
-                "Go Back from notifications"
+                "Go back"
             )
             val supportDeveloperActions = mutableListOf(
-                "Share this bot", "Donate", "Go back from support"
+                "Share this bot", "Donate", "Go back"
             )
             menuTree.addNodes(
                 menuRoot, Pair(intArrayOf(0), infoMenuList), Pair(intArrayOf(1), friendsActions), Pair(
@@ -49,14 +69,14 @@ class MenuTree {
                 "Remove a friend",
                 "See friend's profile information",
                 "See friend's wishlist",
-                "Go back from public friends"
+                "Go back"
             )
             val localFriends = mutableListOf(
                 "My local friends",
                 "Create a local friend",
                 "Share my local friend",
                 "See local friend profile info",
-                "Go back from local friends"
+                "Go back"
             )
             menuTree.addNodes(
                 menuRoot, Pair(
@@ -68,23 +88,22 @@ class MenuTree {
                 "Add a notification",
                 "Change a notification",
                 "Delete a notification",
-                "Go Back"
+                "Go back"
             )
             val multipleNotificationsActions = mutableListOf(
                 "My active notifications",
                 "Modify all notifications",
                 "Add all friends' birthdays to notifications",
                 "Remove all notifications",
-                "Go Back"
+                "Go back"
             )
             menuTree.addNodes(
                 menuRoot,
                 Pair(intArrayOf(2, 2), singleNotificationsActions),
                 Pair(intArrayOf(2, 3), multipleNotificationsActions)
             )
-            menuTree.visualizeTree()
             this.menuRoot = menuRoot
-            return menuRoot
+            this.menuTree = menuTree
         }
 
 
