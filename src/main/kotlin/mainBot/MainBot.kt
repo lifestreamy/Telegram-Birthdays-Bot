@@ -78,9 +78,6 @@ class MainBot {
                 onCommand("""(red|green|blue)""".toRegex()) {
                     message { "you typed ${update.message?.text} color" }.send(user, bot)
                 }
-                /**
-                 * Open main menu on /menu command
-                 */
                 onCommand("/menu") {
                     // delete path for this user id
                     redis.del(update.message!!.from!!.id.toString())
@@ -88,7 +85,6 @@ class MainBot {
                         ReplyKeyboardMarkup(KeyboardButtons.generateButtonsByPath())
                     }.send(user, bot)
                 }
-
                 onCommand(regex) {
                     val text = update.message?.text
                     val fromId = update.message!!.from!!.id

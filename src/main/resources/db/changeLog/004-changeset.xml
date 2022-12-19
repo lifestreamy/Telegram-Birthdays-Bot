@@ -1,0 +1,37 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        logicalFilePath="01-init.xml">
+    <changeSet id="create_notifications" author="@lifestreamy">
+
+        <createTable tableName="notifications">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type = "varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type = "varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_time" type ="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="notifications" columnNames="id,type,message,date_time"
+                       constraintName="notifications_pkey"/>
+
+        <addForeignKeyConstraint
+                constraintName="notifications_fkey"
+                baseTableName="notifications"
+                baseColumnNames="id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+        />
+
+    </changeSet>
+
+
+</databaseChangeLog>

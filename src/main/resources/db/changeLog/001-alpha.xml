@@ -4,7 +4,13 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
         logicalFilePath="01-init.xml">
 
-    <changeSet id="01" author="tim" context="prod">
+
+    <preConditions onFail="HALT" onErrorMessage="changelog 1 precondition failed">
+        <dbms  type="postgresql"  />
+        <runningAs  username="postgres"  />
+    </preConditions>
+
+    <changeSet id="000" author="tim" context="prod">
         <sql>
             CREATE SEQUENCE users_id_seq
             INCREMENT 1
@@ -14,7 +20,6 @@
             CACHE 1
 <!--            OWNED BY users.id;-->
             ;
-
 
             CREATE TABLE users
             (

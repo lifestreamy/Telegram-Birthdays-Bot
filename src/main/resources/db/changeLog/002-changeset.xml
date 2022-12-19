@@ -1,0 +1,45 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        logicalFilePath="01-init.xml">
+
+
+    <changeSet id="create_friendsips" author="@lifestreamy">
+
+        <createTable tableName="friendships">
+            <column name="id1" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id2" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="accepted" type="boolean">
+                <constraints nullable="false" unique="false"/>
+            </column>
+
+        </createTable>
+
+        <addPrimaryKey tableName="friendships" columnNames="id1,id2"
+                       constraintName="friendships_pkey"/>
+
+        <addForeignKeyConstraint
+                constraintName="friendships_fkey1"
+                baseTableName="friendships"
+                baseColumnNames="id1"
+                referencedTableName="users"
+                referencedColumnNames="id"
+        />
+
+        <addForeignKeyConstraint
+                constraintName="friendships_fkey2"
+                baseTableName="friendships"
+                baseColumnNames="id2"
+                referencedTableName="users"
+                referencedColumnNames="id"
+        />
+
+    </changeSet>
+</databaseChangeLog>
+
+
