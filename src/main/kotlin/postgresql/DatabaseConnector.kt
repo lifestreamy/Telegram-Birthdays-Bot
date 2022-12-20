@@ -7,12 +7,12 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class DatabaseConnector(dbLink: String, dbUser: String, dbPassword: String) {
 
-    private val db : Database
+    val db : Database
 
     init {
         db = Database.connect(
             url = dbLink,
-            user = dbUser, password = dbPassword
+            user = dbUser, password = dbPassword, driver = ""
         )
     }
 
@@ -37,24 +37,17 @@ class DatabaseConnector(dbLink: String, dbUser: String, dbPassword: String) {
                     }
                 }
             }
-//            println(namesList.toString())
-//    val insertedNamesId = transaction {
-//        Users.insert {
-//            it[name] = "Yorky"
-//            it[telegramId] = "@Pedik"
-//        } get Users.id // fetches the auto generated ID
-//    }
-//    println(insertedNamesId)
         }
     }
 
-    fun insertInUsers(pName: Column<String>, pID: Column<String>, pDate: Column<LocalDate>, pLocale : Column<String>): Int {
+    fun insertInUsers(pName: Column<String>, pID: Column<String>, pDate: Column<LocalDate>, pLocale : Column<String>, pTimeZone : Column<Int>): Int {
         val insertedNamesId = transaction {
             Users.insert {
                 it[name] = pName
                 it[telegramId] = pID
                 it[birth_date] = pDate
                 it[locale] = pLocale
+                it[time_zone] = pTimeZone
             } get Users.id // fetches the auto generated ID
         }
         return insertedNamesId
