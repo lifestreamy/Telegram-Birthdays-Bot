@@ -3,10 +3,13 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <includeAll path="changeLog" relativeToChangelogFile="true"/>
-<!--    script
-
-
--->
-
+    <!--    <includeAll path="changeLog" relativeToChangelogFile="true"/>-->
+<!--    <include file="changeLog/000-changeset.xml" relativeToChangelogFile="true"/>-->
+    <include file="changeLog/001-changeset.xml" relativeToChangelogFile="true"/>
+    <include file="changeLog/002-changeset.xml" relativeToChangelogFile="true"/>
+    <include file="changeLog/003-changeset.xml" relativeToChangelogFile="true"/>
+    <include file="changeLog/004-changeset.xml" relativeToChangelogFile="true"/>
+    <include file="changeLog/005-changeset.xml" relativeToChangelogFile="true"/>
+    <include file="changeLog/006-changeset.xml" relativeToChangelogFile="true"/>
+    <include file="changeLog/007-changeset.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

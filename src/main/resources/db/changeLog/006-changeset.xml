@@ -2,7 +2,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
-        logicalFilePath="01-init.xml">
+        logicalFilePath="006-changeset.xml">
     <changeSet id="create_local_friends_access" author="@lifestreamy">
 
         <createTable tableName="local_friends_access">
@@ -23,9 +23,9 @@
         <addForeignKeyConstraint
                 constraintName="local_friends_access_fkey1"
                 baseTableName="local_friends_access"
-                baseColumnNames="id1"
+                baseColumnNames="id1,name"
                 referencedTableName="local_friends"
-                referencedColumnNames="id"
+                referencedColumnNames="id,name"
         />
 
         <addForeignKeyConstraint

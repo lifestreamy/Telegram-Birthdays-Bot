@@ -2,7 +2,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
-        logicalFilePath="01-init.xml">
+        logicalFilePath="007-changeset.xml">
     <changeSet id="create_local_wishes" author="@lifestreamy">
 
         <createTable tableName="local_wishes">
@@ -26,18 +26,11 @@
         <addForeignKeyConstraint
                 constraintName="local_wishes_fkey1"
                 baseTableName="local_wishes"
-                baseColumnNames="id"
+                baseColumnNames="id,name"
                 referencedTableName="local_friends"
-                referencedColumnNames="id"
+                referencedColumnNames="id,name"
         />
 
-        <addForeignKeyConstraint
-                constraintName="local_wishes_fkey2"
-                baseTableName="local_wishes"
-                baseColumnNames="name"
-                referencedTableName="local_friends"
-                referencedColumnNames="name"
-        />
 
     </changeSet>
 
