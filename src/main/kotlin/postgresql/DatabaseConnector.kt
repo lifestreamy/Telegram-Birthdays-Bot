@@ -12,7 +12,7 @@ class DatabaseConnector(dbLink: String, dbUser: String, dbPassword: String) {
     init {
         db = Database.connect(
             url = dbLink,
-            user = dbUser, password = dbPassword, driver = ""
+            user = dbUser, password = dbPassword
         )
     }
 
@@ -40,11 +40,12 @@ class DatabaseConnector(dbLink: String, dbUser: String, dbPassword: String) {
         }
     }
 
-    fun insertInUsers(pName: Column<String>, pID: Column<String>, pDate: Column<LocalDate>, pLocale : Column<String>, pTimeZone : Column<Int>): Int {
+    fun insertInUsers(pName: String, pUserId: Int,pTelegramId: String, pDate: LocalDate, pLocale : String, pTimeZone : Int): Int {
         val insertedNamesId = transaction {
             Users.insert {
                 it[name] = pName
-                it[telegramId] = pID
+                it[user_id] = pUserId
+                it[telegram_id] = pTelegramId
                 it[birth_date] = pDate
                 it[locale] = pLocale
                 it[time_zone] = pTimeZone
