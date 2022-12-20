@@ -3,15 +3,17 @@ services:
 
   db:
     image: postgres:14.1-alpine3.15
-    container_name: db
-    restart: always
+    ports:
+      - '5432:5432'
+#    user: postgres
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1234
-    ports:
-      - '5432:5432'
-    networks:
-      - main
+      - POSTGRES_DB=telegram_bot_db
+#    networks:
+#      - main
+    restart: always
+    container_name: db
     volumes:
       - db:/var/lib/postgresql/data
 
@@ -26,14 +28,16 @@ services:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
     restart: always
+    depends_on:
+      - db
     environment:
       PGADMIN_DEFAULT_EMAIL: nice@ass.com
       PGADMIN_DEFAULT_PASSWORD: nice
       PGADMIN_LISTEN_PORT: 80
     ports:
       - '8080:80'
-    networks:
-      - main
+#    networks:
+#      - main
     volumes:
       - pgadmin:/var/lib/pgadmin
 
@@ -44,8 +48,8 @@ services:
     ports:
       - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass qwe123qwe
-    networks:
-      - main
+#    networks:
+#      - main
     volumes:
       - redis:/data
 
@@ -57,8 +61,8 @@ services:
       - redis
     ports:
       - '6380:8001'
-    networks:
-      - main
+#    networks:
+#      - main
     volumes:
       - redis_insight:/db
 
@@ -69,8 +73,8 @@ services:
 #      - '8765:8765'
 #    container_name: jenkins
 
-networks:
-  main:
+#networks:
+#  main:
 
 volumes:
   db:

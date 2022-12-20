@@ -1,0 +1,41 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        logicalFilePath="003-changeset.xml">
+    <changeSet id="create_wishes" author="@lifestreamy">
+
+        <createTable tableName="wishes">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="who_will_buy" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="wishes" columnNames="id,text"
+                       constraintName="wishes_pkey"/>
+
+        <addForeignKeyConstraint
+                constraintName="wishes_fkey1"
+                baseTableName="wishes"
+                baseColumnNames="id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+        />
+
+        <addForeignKeyConstraint
+                constraintName="wishes_fkey2"
+                baseTableName="wishes"
+                baseColumnNames="who_will_buy"
+                referencedTableName="users"
+                referencedColumnNames="id"
+        />
+
+    </changeSet>
+
+</databaseChangeLog>

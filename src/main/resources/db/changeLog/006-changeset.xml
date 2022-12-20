@@ -1,0 +1,41 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        logicalFilePath="006-changeset.xml">
+    <changeSet id="create_local_friends_access" author="@lifestreamy">
+
+        <createTable tableName="local_friends_access">
+            <column name="id1" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id2" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="local_friends_access" columnNames="id1,name,id2"
+                       constraintName="local_friends_access_pkey"/>
+
+        <addForeignKeyConstraint
+                constraintName="local_friends_access_fkey1"
+                baseTableName="local_friends_access"
+                baseColumnNames="id1,name"
+                referencedTableName="local_friends"
+                referencedColumnNames="id,name"
+        />
+
+        <addForeignKeyConstraint
+                constraintName="local_friends_access_fkey2"
+                baseTableName="local_friends_access"
+                baseColumnNames="id2"
+                referencedTableName="users"
+                referencedColumnNames="id"
+        />
+
+    </changeSet>
+
+</databaseChangeLog>

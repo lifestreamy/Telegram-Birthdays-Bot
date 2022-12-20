@@ -1,0 +1,37 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        logicalFilePath="007-changeset.xml">
+    <changeSet id="create_local_wishes" author="@lifestreamy">
+
+        <createTable tableName="local_wishes">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="who_will_buy" type="varchar(32)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="local_wishes" columnNames="id,name,text"
+                       constraintName="local_wishes_pkey"/>
+
+        <addForeignKeyConstraint
+                constraintName="local_wishes_fkey1"
+                baseTableName="local_wishes"
+                baseColumnNames="id,name"
+                referencedTableName="local_friends"
+                referencedColumnNames="id,name"
+        />
+
+
+    </changeSet>
+
+</databaseChangeLog>

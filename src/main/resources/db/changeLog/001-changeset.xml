@@ -1,0 +1,37 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        logicalFilePath="001-changeset.xml">
+
+
+    <!--    <preConditions onFail="HALT" onErrorMessage="changelog 1 precondition failed">-->
+    <!--        <dbms type="postgresql"/>-->
+    <!--        <runningAs username="postgres"/>-->
+    <!--    </preConditions>-->
+
+    <changeSet id="create_users" author="@lifestreamy">
+
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(64)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="telegram_id" type="varchar(64)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+            <column name="birth_date" type="date">
+                <constraints nullable="true" unique="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="users" columnNames="id"
+                       constraintName="users_pkey"/>
+
+    </changeSet>
+</databaseChangeLog>
