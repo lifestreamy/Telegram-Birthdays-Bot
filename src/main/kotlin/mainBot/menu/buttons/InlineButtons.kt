@@ -1,4 +1,4 @@
-package mainBot.buttons
+package mainBot.menu.buttons
 /*
 
 import com.github.kotlintelegrambot.entities.InlineKeyboardMarkup

@@ -1,4 +1,4 @@
-package mainBot.scenarios.friends
+package postgresql.scenarios.friends
 
 class LocalFriends {
 

@@ -6,9 +6,9 @@ import eu.vendeli.tgbot.types.ReplyKeyboardMarkup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import mainBot.buttons.KeyboardButtons
+import mainBot.menu.buttons.KeyboardButtons
 import mainBot.menu.MenuTree
-import mainBot.util.Util
+import mainBot.menu.util.Util
 import redis.RedisConnector
 import java.io.FileInputStream
 import java.io.OutputStreamWriter

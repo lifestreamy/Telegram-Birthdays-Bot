@@ -1,4 +1,4 @@
-package mainBot.buttons
+package mainBot.menu.buttons
 
 
 import eu.vendeli.tgbot.types.KeyboardButton

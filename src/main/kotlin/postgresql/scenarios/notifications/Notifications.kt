@@ -1,4 +1,4 @@
-package mainBot.scenarios.notifications
+package postgresql.scenarios.notifications
 
 class Notifications {
 
