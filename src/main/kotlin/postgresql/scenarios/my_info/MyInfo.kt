@@ -1,4 +1,4 @@
-package mainBot.scenarios.my_info
+package postgresql.scenarios.my_info
 
 class MyInfo {
 

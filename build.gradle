@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.7.21'
+    ext.kotlin_version = '1.7.22'
     repositories {
         mavenCentral()
     }
@@ -46,21 +46,20 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 //    testImplementation 'org.slf4j:slf4j-api:2.0.3'
 //    implementation 'org.slf4j:slf4j-log4j12:2.0.3'
-    implementation('io.ktor:ktor-client-core:2.1.3')
-    implementation('io.ktor:ktor-client-cio:2.1.3')
+    implementation('io.ktor:ktor-client-core:2.2.1')
+    implementation('io.ktor:ktor-client-cio:2.2.1')
     implementation 'eu.vendeli:telegram-bot:2.4.2'
-
     implementation 'com.github.lifestreamy:TreeBuilder:v1.0'
-
     implementation 'org.jetbrains.exposed:exposed-core:0.40.1'
     implementation 'org.jetbrains.exposed:exposed-dao:0.40.1'
     implementation 'org.jetbrains.exposed:exposed-jdbc:0.40.1'
     implementation 'org.jetbrains.exposed:exposed-kotlin-datetime:0.40.1'
-    implementation 'org.postgresql:postgresql:42.5.0'
-    implementation 'com.sxtanna.database:Kedis:+'
-    liquibaseRuntime 'org.liquibase:liquibase-core:4.2.2'
-    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
-    liquibaseRuntime 'org.postgresql:postgresql:42.5.0'
+    implementation 'org.postgresql:postgresql:42.5.1'
+    implementation 'com.sxtanna.database:Kedis:1.2'
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.18.0'
+    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:3.0.2'
+    liquibaseRuntime 'org.postgresql:postgresql:42.5.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 

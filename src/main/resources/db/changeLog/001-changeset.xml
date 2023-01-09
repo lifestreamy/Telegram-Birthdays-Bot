@@ -28,6 +28,12 @@
             <column name="birth_date" type="date">
                 <constraints nullable="true" unique="false"/>
             </column>
+            <column name="locale" type="varchar(3)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="time_zone" type="bigint">
+                <constraints nullable="false" unique="false"/>
+            </column>
         </createTable>
 
         <addPrimaryKey tableName="users" columnNames="id"

@@ -1,4 +1,4 @@
-package mainBot.scenarios.support_developer
+package postgresql.scenarios.support_developer
 
 class SupportDeveloper {
 

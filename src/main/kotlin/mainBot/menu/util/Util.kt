@@ -1,4 +1,4 @@
-package mainBot.util
+package mainBot.menu.util
 
 import mainBot.menu.MenuTree
 
